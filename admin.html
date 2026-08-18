@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel · Portfolio Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+    <!-- ==================================================
+       LOGIN SCREEN
+    ================================================== -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">
+                    <span class="logo-icon">AC</span>
+                    <span>Portfolio Admin</span>
+                </div>
+                <p>Sign in to manage your projects</p>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="loginUsername" placeholder="Enter username" required />
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter password" required />
+                </div>
+                <button type="submit" class="btn-primary btn-block">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+                <div id="loginError" class="login-error"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================================================
+       DASHBOARD
+    ================================================== -->
+    <div id="dashboardScreen" style="display:none;">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <span class="logo-icon">AC</span>
+                    <span>Admin</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="active" data-tab="dashboard">
+                    <i class="fas fa-th-large"></i> Dashboard
+                </a>
+                <a href="#" data-tab="projects">
+                    <i class="fas fa-folder-open"></i> Projects
+                </a>
+                <a href="#" data-tab="create">
+                    <i class="fas fa-plus-circle"></i> Create Project
+                </a>
+                <a href="#" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="topbar">
+                <h2 id="pageTitle">Dashboard</h2>
+                <div class="topbar-right">
+                    <span class="admin-name" id="adminName">Admin</span>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div id="dashboardContent" class="content-section">
+                <div class="dashboard-stats" id="dashboardStats">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-folder-open"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="totalProjects">0</span>
+                            <span class="stat-label">Total Projects</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="liveProjects">0</span>
+                            <span class="stat-label">Live Projects</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-number" id="archivedProjects">0</span>
+                            <span class="stat-label">Archived</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="recent-projects">
+                    <h3>Recent Projects</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Project</th>
+                                    <th>Category</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentProjectsTable"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projects List Content -->
+            <div id="projectsContent" class="content-section" style="display:none;">
+                <div class="projects-header">
+                    <h3>All Projects</h3>
+                    <button class="btn-primary" onclick="showTab('create')">
+                        <i class="fas fa-plus"></i> New Project
+                    </button>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Project</th>
+                                <th>Category</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allProjectsTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Create/Edit Project Content -->
+            <div id="createContent" class="content-section" style="display:none;">
+                <div class="create-header">
+                    <h3 id="formTitle">Create New Project</h3>
+                </div>
+                <form id="projectForm" enctype="multipart/form-data">
+                    <input type="hidden" id="formMode" value="create" />
+                    <input type="hidden" id="projectSlug" value="" />
+
+                    <!-- Section 1: Basic Information -->
+                    <div class="form-section">
+                        <div class="section-header" onclick="toggleSection(this)">
+                            <h4><i class="fas fa-info-circle"></i> Basic Information</h4>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="section-body">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Project Name *</label>
+                                    <input type="text" id="projectName" placeholder="e.g., E-Commerce Platform" required />
+                                </div>
+                                <div class="form-group">
+                                    <label>Project Slug *</label>
+                                    <input type="text" id="projectSlugInput" placeholder="e.g., ecommerce-platform" required />
+                                    <small>URL-friendly name (auto-generated from project name)</small>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Category *</label>
+                                    <select id="projectCategory" required>
+                                        <option value="">Select Category</option>
+                                        <option value="Full Stack">Full Stack</option>
+                                        <option value="Frontend">Frontend</option>
+                                        <option value="Backend">Backend</option>
+                                        <option value="Business">Business</option>
+                                        <option value="E-Commerce">E-Commerce</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Status</label>
+                                    <select id="projectStatus">
+                                        <option value="Live">Live</option>
+                                        <option value="Archived">Archived</option>
+                                        <option value="In Progress">In Progress</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Completion Date</label>
+                                    <input type="date" id="completionDate" />
+                                </div>
+                                <div class="form-group">
+                                    <label>My Role</label>
+                                    <input type="text" id="projectRole" placeholder="e.g., Full Stack Developer" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Short Tagline</label>
+                                <input type="text" id="tagline" placeholder="e.g., A complete online shopping experience" />
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>GitHub URL</label>
+                                    <input type="url" id="githubUrl" placeholder="https://github.com/username/repo" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Live Demo URL</label>
+                                    <input type="url" id="demoUrl" placeholder="https://your-demo.vercel.app" />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                         <div class="form-group">
+    <label>Hero Image URL</label>
+    <input
+        type="url"
+        id="heroImage"
+        placeholder="https://res.cloudinary.com/your-cloud/image/upload/v123456/hero.webp"
+    />
+    <small>Paste a public image URL (Cloudinary, GitHub, CDN, etc.)</small>
+
+    <div id="heroImagePreview" class="image-preview"></div>
+</div>
+                                <div class="form-group">
+                                    <label>Banner Image</label>
+                                    <input type="file" id="bannerImage" accept="image/*" />
+                                    <div id="bannerImagePreview" class="image-preview"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Overview -->
+                    <div class="form-section">
+                        <div class="section-header" onclick="toggleSection(this)">
+                            <h4><i class="fas fa-align-left"></i> Project Overview</h4>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="section-body">
+                            <div class="form-group">
+                                <label>Overview</label>
+                                <textarea id="overview" rows="6" placeholder="Write a detailed overview of the project..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Problem Statement -->
+                    <div class="form-section">
+                        <div class="section-header" onclick="toggleSection(this)">
+                            <h4><i class="fas fa-exclamation-triangle"></i> Problem Statement</h4>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="section-body">
+                            <div class="form-group">
+                                <label>Problem Statement</label>
+                                <textarea id="problemStatement" rows="5" placeholder="What problem does this project solve?"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Solution -->
+                    <div class="form-section">
+                        <div class="section-header" onclick="toggleSection(this)">
+                            <h4><i class="fas fa-lightbulb"></i> Solution</h4>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="section-body">
+                            <div class="form-group">
+                                <label>Solution</label>
+                                <textarea id="solution" rows="5" placeholder="How does this project solve the problem?"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 5: Gallery -->
+                    <div class="form-section">
+                        <div class="section-header" onclick="toggleSection(this)">
+                            <h4><i class="fas fa-images"></i> Project Gallery</h4>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="section-body">
+                            <div class="form-group">
+                                <label>Upload Gallery Images</label>
+                                <input type="file" id="galleryUpload" accept="image/*" multiple />
+                                <div id="galleryPreview" class="gallery-preview"></div>
+                            </div>
+                            <div id="galleryContainer">
+                                <!-- Dynamic gallery items will be added here -->
+                            </div>
+                            <button type="button" class="btn-secondary btn-sm" onclick="addGalleryItem()">
+                                <i class="fas fa-plus"></i> Add Gallery Item
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Section 6: Features -->
+                    <div class="form-section">
+                        <div class="section-header" onclick="toggleSection(this)">
+                            <h4><i class="fas fa-check-circle"></i> Key Features</h4>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="section-body">
+                            <div id="featuresContainer">
+                                <!-- Dynamic feature items -->
+                            </div>
+                            <button type="button" class="btn-secondary btn-sm" onclick="addFeature()">
+                                <i class="fas fa-plus"></i> Add Feature
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Section 7: Tech Stack -->
+                    <div class="form-section">
+                        <div class="section-header" onclick="toggleSection(this)">
+                            <h4><i class="fas fa-code"></i> Technology Stack</h4>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="section-body">
+                            <div id="techStackContainer">
+                                <!-- Dynamic tech items -->
+                            </div>
+                            <button type="button" class="btn-secondary btn-sm" onclick="addTechItem()">
+                                <i class="fas fa-plus"></i> Add Technology
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Section 8: Timeline -->
+                    <div class="form-section">
+                        <div class="section-header" onclick="toggleSection(this)">
+                            <h4><i class="fas fa-clock"></i> Development Timeline</h4>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="section-body">
+                            <div id="timelineContainer">
+                                <!-- Dynamic timeline items -->
+                            </div>
+                            <button type="button" class="btn-secondary btn-sm" onclick="addTimelineItem()">
+                                <i class="fas fa-plus"></i> Add Timeline Step
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Section 9: Challenges -->
+                    <div class="form-section">
+                        <div class="section-header" onclick="toggleSection(this)">
+                            <h4><i class="fas fa-bolt"></i> Challenges</h4>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="section-body">
+                            <div id="challengesContainer">
+                                <!-- Dynamic challenge items -->
+                            </div>
+                            <button type="button" class="btn-secondary btn-sm" onclick="addChallenge()">
+                                <i class="fas fa-plus"></i> Add Challenge
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Section 10: Learnings -->
+                    <div class="form-section">
+                        <div class="section-header" onclick="toggleSection(this)">
+                            <h4><i class="fas fa-graduation-cap"></i> Learnings</h4>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="section-body">
+                            <div id="learningsContainer">
+                                <!-- Dynamic learning items -->
+                            </div>
+                            <button type="button" class="btn-secondary btn-sm" onclick="addLearning()">
+                                <i class="fas fa-plus"></i> Add Learning
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Section 11: Statistics -->
+                    <div class="form-section">
+                        <div class="section-header" onclick="toggleSection(this)">
+                            <h4><i class="fas fa-chart-bar"></i> Project Statistics</h4>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="section-body">
+                            <div id="statisticsContainer">
+                                <!-- Dynamic statistic items -->
+                            </div>
+                            <button type="button" class="btn-secondary btn-sm" onclick="addStatistic()">
+                                <i class="fas fa-plus"></i> Add Statistic
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Section 12: SEO -->
+                    <div class="form-section">
+                        <div class="section-header" onclick="toggleSection(this)">
+                            <h4><i class="fas fa-search"></i> SEO</h4>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="section-body">
+                            <div class="form-group">
+                                <label>Meta Title</label>
+                                <input type="text" id="metaTitle" placeholder="SEO Title" />
+                            </div>
+                            <div class="form-group">
+                                <label>Meta Description</label>
+                                <textarea id="metaDescription" rows="3" placeholder="SEO Description"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Keywords</label>
+                                <input type="text" id="metaKeywords" placeholder="keyword1, keyword2, keyword3" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 13: Navigation -->
+                    <div class="form-section">
+                        <div class="section-header" onclick="toggleSection(this)">
+                            <h4><i class="fas fa-arrows-h"></i> Project Navigation</h4>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                        </div>
+                        <div class="section-body">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Previous Project</label>
+                                    <select id="prevProject">
+                                        <option value="">None</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Next Project</label>
+                                    <select id="nextProject">
+                                        <option value="">None</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary btn-lg" id="submitBtn">
+                            <i class="fas fa-save"></i> Save Project
+                        </button>
+                        <button type="button" class="btn-secondary btn-lg" onclick="resetForm()">
+                            <i class="fas fa-undo"></i> Reset
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <!-- ==================================================
+       TOAST NOTIFICATION
+    ================================================== -->
+    <div id="toast" class="toast"></div>
+
+    <!-- ==================================================
+       CONFIRM DIALOG
+    ================================================== -->
+    <div id="confirmDialog" class="modal-overlay">
+        <div class="modal-box" style="max-width: 400px;">
+            <h3>Confirm Delete</h3>
+            <p id="confirmMessage">Are you sure you want to delete this item?</p>
+            <div style="display: flex; gap: 12px; margin-top: 20px; justify-content: flex-end;">
+                <button class="btn-secondary" onclick="closeConfirm()">Cancel</button>
+                <button class="btn-danger" id="confirmBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================================================
+       SCRIPTS
+    ================================================== -->
+    <script src="admin.js"></script>
+</body>
+</html>
