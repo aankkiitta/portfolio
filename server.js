@@ -300,77 +300,81 @@ app.post('/api/login', async (req, res) => {
 // PROJECTS CRUD (UNCHANGED - ALL FUNCTIONALITY PRESERVED)
 // ==================================================
 
-// Get all projects
-app.get('/api/projects', async (req, res) => {
-    try {
-        const [projects] = await pool.query(`
-            SELECT 
-                id, project_name, project_slug, category, status, 
-                completion_date, role, tagline, github_url, demo_url,
-                hero_image, banner_image, overview, problem_statement,
-                solution, meta_title, meta_description, meta_keywords,
-                prev_project, next_project, created_at, updated_at
-            FROM projects 
-            ORDER BY created_at DESC
-        `);
-        res.json(projects);
-    } catch (error) {
-        console.error('Error fetching projects:', error);
-        res.status(500).json({ error: 'Failed to fetch projects.' });
-    }
-});
-
-// Get single project by ID
+// ==================================================
+// GET PROJECT BY ID
+// ==================================================
 app.get('/api/projects/:id', async (req, res) => {
     try {
         const { id } = req.params;
+        
+        // Validate ID
+        const projectId = Number(id);
+        if (!Number.isInteger(projectId) || projectId <= 0) {
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid project ID.'
+            });
+        }
 
+        // Query database
         const [projects] = await pool.query(
             'SELECT * FROM projects WHERE id = ?',
-            [id]
+            [projectId]
         );
 
         if (projects.length === 0) {
-            return res.status(404).json({ error: 'Project not found.' });
+            return res.status(404).json({
+                success: false,
+                error: 'Project not found.'
+            });
         }
 
         const project = projects[0];
 
+        // Fetch related data
         const [gallery] = await pool.query(
             'SELECT * FROM project_gallery WHERE project_id = ? ORDER BY display_order',
-            [project.id]
+            [projectId]
         );
+        project.gallery = gallery;
 
         const [features] = await pool.query(
             'SELECT * FROM project_features WHERE project_id = ? ORDER BY display_order',
-            [project.id]
+            [projectId]
         );
+        project.features = features;
 
         const [techStack] = await pool.query(
             'SELECT * FROM project_tech_stack WHERE project_id = ? ORDER BY display_order',
-            [project.id]
+            [projectId]
         );
+        project.techStack = techStack;
 
         const [timeline] = await pool.query(
             'SELECT * FROM project_timeline WHERE project_id = ? ORDER BY display_order',
-            [project.id]
+            [projectId]
         );
+        project.timeline = timeline;
 
         const [challenges] = await pool.query(
             'SELECT * FROM project_challenges WHERE project_id = ? ORDER BY display_order',
-            [project.id]
+            [projectId]
         );
+        project.challenges = challenges;
 
         const [learnings] = await pool.query(
             'SELECT * FROM project_learnings WHERE project_id = ? ORDER BY display_order',
-            [project.id]
+            [projectId]
         );
+        project.learnings = learnings;
 
         const [statistics] = await pool.query(
             'SELECT * FROM project_statistics WHERE project_id = ? ORDER BY display_order',
-            [project.id]
+            [projectId]
         );
+        project.statistics = statistics;
 
+        // Get prev/next projects
         let prevProject = null;
         let nextProject = null;
 
@@ -394,44 +398,22 @@ app.get('/api/projects/:id', async (req, res) => {
             }
         }
 
+        project.prevProject = prevProject;
+        project.nextProject = nextProject;
+
         res.json({
-            id: project.id,
-            project_name: project.project_name,
-            project_slug: project.project_slug,
-            category: project.category,
-            status: project.status,
-            completion_date: project.completion_date,
-            role: project.role,
-            tagline: project.tagline,
-            github_url: project.github_url,
-            demo_url: project.demo_url,
-            hero_image: project.hero_image,
-            banner_image: project.banner_image,
-            overview: project.overview,
-            problem_statement: project.problem_statement,
-            solution: project.solution,
-            meta_title: project.meta_title,
-            meta_description: project.meta_description,
-            meta_keywords: project.meta_keywords,
-            prev_project: project.prev_project,
-            next_project: project.next_project,
-            gallery,
-            features,
-            techStack,
-            timeline,
-            challenges,
-            learnings,
-            statistics,
-            prevProject,
-            nextProject
+            success: true,
+            project
         });
 
     } catch (error) {
         console.error('Error fetching project:', error);
-        res.status(500).json({ error: 'Failed to fetch project.' });
+        res.status(500).json({
+            success: false,
+            error: 'Failed to fetch project.'
+        });
     }
 });
-
 // CREATE PROJECT
 app.post('/api/projects', authenticateToken, upload.fields([
     { name: 'hero_image', maxCount: 1 },
