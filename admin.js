@@ -3,12 +3,13 @@
 // ==================================================
 
 // ==================================================
-// API CONFIGURATION
+// API CONFIGURATION - AUTO DETECT ENVIRONMENT
 // ==================================================
 
+// Auto-detect environment - uses window.location to determine if local or production
 const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:5000'
-    : 'https://YOUR-LIVE-BACKEND-DOMAIN'; // CHANGE THIS!
+    : 'https://portfolio-3-l63x.onrender.com'; // YOUR LIVE BACKEND URL
 
 const API_URL = `${API_BASE_URL}/api`;
 
@@ -93,7 +94,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             errorEl.style.display = 'block';
         }
     } catch (error) {
-        errorEl.textContent = 'Connection error. Please check your server.';
+        errorEl.textContent = 'Cannot connect to the live server. Please check your connection.';
         errorEl.style.display = 'block';
         console.error('Login error:', error);
     } finally {
@@ -192,6 +193,7 @@ async function loadDashboard() {
         }
     } catch (error) {
         console.error('Error loading dashboard:', error);
+        showToast('Cannot connect to the live server. Please check your connection.', 'error');
     }
 }
 
@@ -217,6 +219,7 @@ async function loadAllProjects() {
         }
     } catch (error) {
         console.error('Error loading projects:', error);
+        showToast('Cannot connect to the live server. Please check your connection.', 'error');
     }
 }
 
@@ -852,7 +855,7 @@ document.getElementById('projectForm').addEventListener('submit', async (e) => {
             showToast(data.error || 'Failed to save project.', 'error');
         }
     } catch (error) {
-        showToast('Connection error. Please check your server.', 'error');
+        showToast('Cannot connect to the live server. Please check your connection.', 'error');
         console.error('Error saving project:', error);
     }
 });
@@ -1008,7 +1011,7 @@ async function editProject(id) {
             showToast('Failed to load project data.', 'error');
         }
     } catch (error) {
-        showToast('Connection error. Please check your server.', 'error');
+        showToast('Cannot connect to the live server. Please check your connection.', 'error');
         console.error('Error loading project:', error);
     }
 }
@@ -1048,7 +1051,7 @@ function deleteProject(id) {
                 showToast(data.error || 'Failed to delete project.', 'error');
             }
         } catch (error) {
-            showToast('Connection error. Please check your server.', 'error');
+            showToast('Cannot connect to the live server. Please check your connection.', 'error');
             console.error('Error deleting project:', error);
         }
     });
