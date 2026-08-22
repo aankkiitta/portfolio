@@ -3948,175 +3948,6 @@ section {
 body.modal-open {
   overflow: hidden !important;
 }
-
-
-/* ==========================================
-   HERO PHOTO - DESKTOP
-========================================== */
-
-.profile-image-wrapper {
-    width: 100%;
-    max-width: 620px;
-    height: 620px;
-
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-
-    overflow: hidden;
-    background: transparent;
-
-    /* Move complete photo upward */
-    transform: translateY(-35px);
-}
-
-.hero-profile-image {
-    width: 100%;
-    height: 100%;
-
-    object-fit: contain;
-    object-position: center center;
-
-    display: block;
-
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    border-radius: 0;
-
-    animation: profileFloat 6s ease-in-out infinite;
-}
-
-
-/* ==========================================
-   PHOTO FLOAT ANIMATION
-========================================== */
-
-@keyframes profileFloat {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-8px);
-    }
-
-}
-
-
-/* ==========================================
-   TABLET
-========================================== */
-
-@media (max-width: 1024px) {
-
-    .profile-image-wrapper {
-        width: 100%;
-        max-width: 520px;
-        height: 520px;
-
-        transform: translateY(-25px);
-    }
-
-    .hero-profile-image {
-        width: 100%;
-        height: 100%;
-
-        object-fit: contain;
-        object-position: center center;
-    }
-
-}
-
-
-/* ==========================================
-   MOBILE
-========================================== */
-
-@media (max-width: 768px) {
-
-    .hero-right {
-        width: 100%;
-        max-width: 100%;
-
-        margin: 0 auto;
-    }
-
-    .profile-image-wrapper {
-        width: 100%;
-        max-width: 100%;
-
-        height: 430px;
-
-        display: flex;
-        align-items: flex-end;
-        justify-content: center;
-
-        overflow: hidden;
-
-        /* Move image upward */
-        transform: translateY(-20px);
-    }
-
-    .hero-profile-image {
-        width: 100%;
-        height: 100%;
-
-        object-fit: contain;
-        object-position: center center;
-
-        transform: none;
-    }
-
-}
-
-
-/* ==========================================
-   SMALL MOBILE
-========================================== */
-
-@media (max-width: 480px) {
-
-    .profile-image-wrapper {
-        width: 100%;
-        max-width: 100%;
-
-        height: 360px;
-
-        transform: translateY(-15px);
-    }
-
-    .hero-profile-image {
-        width: 100%;
-        height: 100%;
-
-        object-fit: contain;
-        object-position: center center;
-    }
-
-}
-
-
-/* ==========================================
-   VERY SMALL MOBILE
-========================================== */
-
-@media (max-width: 360px) {
-
-    .profile-image-wrapper {
-        height: 320px;
-
-        transform: translateY(-10px);
-    }
-
-    .hero-profile-image {
-        object-fit: contain;
-        object-position: center center;
-    }
-
-}
 </style>
 </head>
 <body>
@@ -4218,16 +4049,64 @@ I build responsive, scalable, and user-friendly web applications with clean code
 
 </div>
       </div>
-      <!-- HERO IMAGE -->
-<div class="hero-right reveal-right">
-    <div class="profile-image-wrapper">
-        <img
-            src="header.png"
-            alt="Ankita Chauhan"
-            class="hero-profile-image"
-        >
+      <div class="hero-right reveal-right">
+        <div class="profile-card">
+          <div class="vscode-editor">
+            <div class="editor-header"><div class="mac-dots"><span></span><span></span><span></span></div><span class="editor-title">portfolio.js — Visual Studio Code</span></div>
+          <div class="editor-body">
+    <div class="code-line">
+        <span class="line-number">1</span>
+        <span><span class="keyword">const</span> <span class="variable">developer</span> = {</span>
+    </div>
+
+    <div class="code-line">
+        <span class="line-number">2</span>
+        <span>&nbsp;&nbsp;<span class="attribute">name</span>: <span class="string">"Ankita Chauhan"</span>,</span>
+    </div>
+
+    <div class="code-line">
+        <span class="line-number">3</span>
+        <span>&nbsp;&nbsp;<span class="attribute">role</span>: <span class="string">"Full Stack Web Developer"</span>,</span>
+    </div>
+
+    <div class="code-line">
+        <span class="line-number">4</span>
+        <span>&nbsp;&nbsp;<span class="attribute">frontend</span>: [<span class="string">"HTML"</span>, <span class="string">"CSS"</span>, <span class="string">"JavaScript"</span>, <span class="string">"React"</span>],</span>
+    </div>
+
+    <div class="code-line">
+        <span class="line-number">5</span>
+        <span>&nbsp;&nbsp;<span class="attribute">backend</span>: [<span class="string">"Node.js"</span>, <span class="string">"Express.js"</span>],</span>
+    </div>
+
+    <div class="code-line">
+        <span class="line-number">6</span>
+        <span>&nbsp;&nbsp;<span class="attribute">database</span>: <span class="string">"MySQL"</span>,</span>
+    </div>
+
+    <div class="code-line">
+        <span class="line-number">7</span>
+        <span>&nbsp;&nbsp;<span class="attribute">currentFocus</span>: <span class="string">"Building Full Stack Projects"</span>,</span>
+    </div>
+
+    <div class="code-line">
+        <span class="line-number">8</span>
+        <span>&nbsp;&nbsp;<span class="attribute">status</span>: <span class="string">"Open to Internships"</span></span>
+    </div>
+
+    <div class="code-line">
+        <span class="line-number">9</span>
+        <span>};</span>
+    </div>
+
+    <div class="code-line">
+        <span class="line-number">10</span>
+        <span><span class="comment">// Crafting modern web experiences with clean code 🚀</span> <span class="cursor-blink"></span></span>
     </div>
 </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
