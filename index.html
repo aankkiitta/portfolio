@@ -3948,61 +3948,49 @@ section {
 body.modal-open {
   overflow: hidden !important;
 }
-
-
 /* ==========================================
-   HERO PHOTO - DESKTOP
+   HERO PHOTO - DESKTOP (UNCHANGED)
 ========================================== */
 
 .profile-image-wrapper {
     width: 100%;
-    max-width: 620px;
-    height: 620px;
-
+    max-width: 680px;
+    height: 680px;
     display: flex;
     align-items: flex-end;
     justify-content: center;
-
-    overflow: hidden;
+    overflow: visible;
     background: transparent;
-
-    /* Move complete photo upward */
-    transform: translateY(-35px);
+    position: relative;
+    transform: translateY(-70px);
+    margin-bottom: -20px;
 }
 
 .hero-profile-image {
-    width: 100%;
-    height: 100%;
-
+    width: 125%;
+    height: 125%;
     object-fit: contain;
-    object-position: center center;
-
+    object-position: center bottom;
     display: block;
-
     background: transparent;
     border: none;
-    box-shadow: none;
     border-radius: 0;
-
+    transform: translateY(-55px);
     animation: profileFloat 6s ease-in-out infinite;
+    filter:
+        drop-shadow(6px 6px 0px rgba(108, 77, 255, 0.12))
+        drop-shadow(12px 12px 0px rgba(108, 77, 255, 0.08))
+        drop-shadow(18px 18px 0px rgba(108, 77, 255, 0.04))
+        drop-shadow(0 20px 25px rgba(70, 55, 120, 0.10));
 }
 
-
-/* ==========================================
-   PHOTO FLOAT ANIMATION
-========================================== */
-
 @keyframes profileFloat {
-
-    0%,
-    100% {
-        transform: translateY(0);
+    0%, 100% {
+        transform: translateY(-55px);
     }
-
     50% {
-        transform: translateY(-8px);
+        transform: translateY(-62px);
     }
-
 }
 
 
@@ -4011,111 +3999,323 @@ body.modal-open {
 ========================================== */
 
 @media (max-width: 1024px) {
-
     .profile-image-wrapper {
-        width: 100%;
-        max-width: 520px;
-        height: 520px;
-
-        transform: translateY(-25px);
+        max-width: 570px;
+        height: 570px;
+        transform: translateY(-50px);
+        margin-bottom: -40px;
     }
-
     .hero-profile-image {
-        width: 100%;
-        height: 100%;
-
+        width: 115%;
+        height: 115%;
         object-fit: contain;
-        object-position: center center;
+        object-position: center bottom;
+        transform: translateY(-40px);
+        filter:
+            drop-shadow(5px 5px 0px rgba(108, 77, 255, 0.12))
+            drop-shadow(10px 10px 0px rgba(108, 77, 255, 0.08))
+            drop-shadow(15px 15px 0px rgba(108, 77, 255, 0.04))
+            drop-shadow(0 18px 22px rgba(70, 55, 120, 0.10));
     }
-
 }
 
 
 /* ==========================================
-   MOBILE
+   MOBILE - COMPLETE FIX
 ========================================== */
 
 @media (max-width: 768px) {
+    /* === HERO GRID === */
+    .hero-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
 
+    /* === HERO LEFT COLUMN === */
+    .hero-left {
+        order: 1 !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.3rem !important;
+    }
+
+    /* === HERO RIGHT COLUMN === */
     .hero-right {
-        width: 100%;
-        max-width: 100%;
-
-        margin: 0 auto;
+        order: 2 !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
     }
 
+    /* === PROFILE INFO CARD === */
+    .profile-info-card {
+        margin: 0 !important;
+        padding: 0.5rem 0.3rem !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .profile-info-card .col {
+        padding: 0 0.2rem !important;
+    }
+    .profile-info-card .col .icon {
+        font-size: 1rem !important;
+    }
+    .profile-info-card .col .label {
+        font-size: 0.6rem !important;
+    }
+    .profile-info-card .col .sub {
+        font-size: 0.5rem !important;
+    }
+
+    /* === IMAGE WRAPPER === */
     .profile-image-wrapper {
-        width: 100%;
-        max-width: 100%;
-
-        height: 430px;
-
-        display: flex;
-        align-items: flex-end;
-        justify-content: center;
-
-        overflow: hidden;
-
-        /* Move image upward */
-        transform: translateY(-20px);
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        transform: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        position: relative !important;
+        overflow: visible !important;
+        background: transparent !important;
     }
 
+    /* === PROFILE IMAGE - LARGE & FULLY VISIBLE === */
     .hero-profile-image {
-        width: 100%;
-        height: 100%;
-
-        object-fit: contain;
-        object-position: center center;
-
-        transform: none;
+        width: 100% !important;
+        max-width: 520px !important;
+        height: auto !important;
+        aspect-ratio: 1/1 !important;
+        object-fit: contain !important;
+        object-position: center !important;
+        display: block !important;
+        position: relative !important;
+        top: 0 !important;
+        transform: none !important;
+        animation: profileFloatMobile 6s ease-in-out infinite !important;
+        filter:
+            drop-shadow(4px 4px 0px rgba(108, 77, 255, 0.12))
+            drop-shadow(8px 8px 0px rgba(108, 77, 255, 0.08))
+            drop-shadow(12px 12px 0px rgba(108, 77, 255, 0.04))
+            drop-shadow(0 15px 20px rgba(70, 55, 120, 0.10)) !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
     }
 
+    @keyframes profileFloatMobile {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-7px);
+        }
+    }
+
+    /* === STATS BAR === */
+    .stats-bar {
+        margin-top: 0.15rem !important;
+        padding: 0.6rem 0.5rem !important;
+        width: 100% !important;
+    }
+
+    /* === HERO SECTION === */
+    #hero {
+        padding: 5.5rem 0 0.25rem !important;
+        min-height: auto !important;
+        margin: 0 !important;
+    }
+
+    /* === HERO BUTTONS === */
+    .hero-buttons {
+        margin: 0 !important;
+        padding: 0 !important;
+        gap: 0.4rem !important;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.8rem !important;
+    }
+
+    /* === CONTAINER === */
+    .container {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    /* === REMOVE ALL EXTRA SPACING === */
+    .hero-badge {
+        margin-bottom: 0.3rem !important;
+    }
+    .hero-title {
+        margin-bottom: 0.2rem !important;
+    }
+    .hero-desc {
+        margin-bottom: 0.5rem !important;
+    }
+    .typing-text {
+        margin-bottom: 0.3rem !important;
+    }
 }
 
 
 /* ==========================================
-   SMALL MOBILE
+   SMALL MOBILE (480px)
 ========================================== */
 
 @media (max-width: 480px) {
-
-    .profile-image-wrapper {
-        width: 100%;
-        max-width: 100%;
-
-        height: 360px;
-
-        transform: translateY(-15px);
-    }
-
     .hero-profile-image {
-        width: 100%;
-        height: 100%;
-
-        object-fit: contain;
-        object-position: center center;
+        max-width: 400px !important;
     }
 
+    .profile-info-card {
+        padding: 0.4rem 0.2rem !important;
+    }
+    .profile-info-card .col .icon {
+        font-size: 0.85rem !important;
+    }
+    .profile-info-card .col .label {
+        font-size: 0.55rem !important;
+    }
+    .profile-info-card .col .sub {
+        font-size: 0.45rem !important;
+    }
+
+    .stats-bar {
+        margin-top: 0.1rem !important;
+        padding: 0.5rem 0.3rem !important;
+    }
+
+    #hero {
+        padding: 5rem 0 0.15rem !important;
+    }
+
+    .hero-buttons {
+        gap: 0.3rem !important;
+    }
+    .btn-primary,
+    .btn-secondary {
+        font-size: 0.75rem !important;
+        padding: 0.4rem 0.8rem !important;
+    }
 }
 
 
 /* ==========================================
-   VERY SMALL MOBILE
+   VERY SMALL MOBILE (360px)
 ========================================== */
 
 @media (max-width: 360px) {
-
-    .profile-image-wrapper {
-        height: 320px;
-
-        transform: translateY(-10px);
-    }
-
     .hero-profile-image {
-        object-fit: contain;
-        object-position: center center;
+        max-width: 340px !important;
     }
 
+    .profile-info-card {
+        padding: 0.3rem 0.15rem !important;
+    }
+    .profile-info-card .col .icon {
+        font-size: 0.7rem !important;
+    }
+    .profile-info-card .col .label {
+        font-size: 0.5rem !important;
+    }
+    .profile-info-card .col .sub {
+        font-size: 0.4rem !important;
+    }
+
+    .stats-bar {
+        margin-top: 0.05rem !important;
+        padding: 0.4rem 0.2rem !important;
+    }
+    .stats-bar .stat-col .s-icon {
+        font-size: 0.8rem !important;
+        width: 1.2rem !important;
+    }
+    .stats-bar .stat-col .s-content .s-number {
+        font-size: 0.7rem !important;
+    }
+    .stats-bar .stat-col .s-content .s-label {
+        font-size: 0.45rem !important;
+    }
+
+    #hero {
+        padding: 4.5rem 0 0.1rem !important;
+    }
+}
+
+
+/* ==========================================
+   DARK THEME
+========================================== */
+
+[data-theme="dark"] .hero-profile-image {
+    filter:
+        drop-shadow(5px 5px 0px rgba(108, 77, 255, 0.10))
+        drop-shadow(10px 10px 0px rgba(108, 77, 255, 0.06))
+        drop-shadow(15px 15px 0px rgba(108, 77, 255, 0.03))
+        drop-shadow(0 15px 20px rgba(0, 0, 0, 0.25)) !important;
+}
+
+[data-theme="dark"] .profile-image-wrapper {
+    background: transparent !important;
+}
+
+
+/* ==========================================
+   ADDITIONAL SAFETY FIXES
+========================================== */
+
+@media (max-width: 768px) {
+    /* Remove any hidden margins or padding from parent containers */
+    .hero-grid,
+    .hero-left,
+    .hero-right,
+    .profile-image-wrapper,
+    .hero-profile-image,
+    .profile-info-card,
+    .stats-bar,
+    #hero,
+    .container {
+        box-sizing: border-box !important;
+    }
+
+    /* Ensure no row-gap on hero grid */
+    .hero-grid {
+        row-gap: 0 !important;
+        column-gap: 0 !important;
+    }
+
+    /* Remove any spacing from all children of hero-left */
+    .hero-left > * {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+    /* Ensure stats bar comes immediately after image */
+    .hero-right + .stats-bar {
+        margin-top: 0.15rem !important;
+    }
+
+    /* Fix any grid spacing in the parent */
+    .hero-grid {
+        grid-template-columns: 1fr !important;
+    }
 }
 </style>
 </head>
@@ -4222,7 +4422,7 @@ I build responsive, scalable, and user-friendly web applications with clean code
 <div class="hero-right reveal-right">
     <div class="profile-image-wrapper">
         <img
-            src="header.png"
+            src="header3.png"
             alt="Ankita Chauhan"
             class="hero-profile-image"
         >
