@@ -2,22 +2,19 @@
 // API CONFIGURATION - AUTO DETECT ENVIRONMENT
 // ==================================================
 
-// Get the current hostname
 const currentHost = window.location.hostname;
 const isLocal = currentHost === 'localhost' || currentHost === '127.0.0.1';
 
-// YOUR BACKEND URL - CHANGE THIS!
 const LIVE_BACKEND_URL = 'https://portfolio-3-l63x.onrender.com';
 
 const API_BASE_URL = isLocal
-    ? 'http://localhost:5000'  // Local development
-    : LIVE_BACKEND_URL;        // Production
+    ? 'http://localhost:5000'
+    : LIVE_BACKEND_URL;
 
 const API_URL = `${API_BASE_URL}/api`;
 
 console.log('🌐 Environment:', isLocal ? 'Local' : 'Production');
 console.log('📡 API Base URL:', API_BASE_URL);
-console.log('📡 API URL:', API_URL);
 
 // ==================================================
 // AUTHENTICATION HELPERS
@@ -75,18 +72,13 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     submitBtn.disabled = true;
     
     try {
-        console.log('🔐 Attempting login to:', `${API_URL}/login`);
-        
         const response = await fetch(`${API_URL}/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
         });
         
-        console.log('📡 Response status:', response.status);
-        
         const data = await response.json();
-        console.log('📡 Response data:', data);
         
         if (response.ok && data.success && data.token) {
             token = data.token;
@@ -194,12 +186,6 @@ function showTab(tab) {
 
 async function loadDashboard() {
     try {
-        const token = getToken();
-        if (!token) {
-            handleUnauthorized();
-            return;
-        }
-        
         const response = await fetch(`${API_URL}/projects`, {
             headers: getAuthHeaders()
         });
@@ -222,7 +208,7 @@ async function loadDashboard() {
         }
     } catch (error) {
         console.error('Error loading dashboard:', error);
-        showToast('Cannot connect to the live server. Please check your connection.', 'error');
+        showToast('Cannot connect to the live server.', 'error');
     }
 }
 
@@ -232,12 +218,6 @@ async function loadDashboard() {
 
 async function loadAllProjects() {
     try {
-        const token = getToken();
-        if (!token) {
-            handleUnauthorized();
-            return;
-        }
-        
         const response = await fetch(`${API_URL}/projects`, {
             headers: getAuthHeaders()
         });
@@ -254,7 +234,7 @@ async function loadAllProjects() {
         }
     } catch (error) {
         console.error('Error loading projects:', error);
-        showToast('Cannot connect to the live server. Please check your connection.', 'error');
+        showToast('Cannot connect to the live server.', 'error');
     }
 }
 
@@ -289,12 +269,6 @@ function renderProjectRows(projects) {
 
 async function loadProjectsSelect() {
     try {
-        const token = getToken();
-        if (!token) {
-            handleUnauthorized();
-            return;
-        }
-        
         const response = await fetch(`${API_URL}/projects`, {
             headers: getAuthHeaders()
         });
@@ -328,7 +302,7 @@ async function loadProjectsSelect() {
 }
 
 // ==================================================
-// CREATE / EDIT PROJECT
+// CREATE / EDIT PROJECT (All the dynamic item functions...)
 // ==================================================
 
 // Auto-generate slug from project name
@@ -354,26 +328,7 @@ if (projectNameInput && slugInput) {
     });
 }
 
-// Image previews
-function setupImagePreview(inputId, previewId) {
-    const input = document.getElementById(inputId);
-    const preview = document.getElementById(previewId);
-    if (!input || !preview) return;
-    
-    input.addEventListener('change', function(e) {
-        preview.innerHTML = '';
-        if (this.files && this.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                preview.appendChild(img);
-            };
-            reader.readAsDataURL(this.files[0]);
-        }
-    });
-}
-
+// Hero Image Preview
 const heroImage = document.getElementById("heroImage");
 const heroPreview = document.getElementById("heroImagePreview");
 
@@ -426,7 +381,7 @@ function toggleSection(header) {
 }
 
 // ==================================================
-// DYNAMIC ITEMS - GALLERY
+// DYNAMIC ITEMS
 // ==================================================
 
 let galleryCounter = 0;
@@ -699,7 +654,6 @@ function removeDynamicItem(id) {
 function getFormData() {
     const formData = new FormData();
     
-    // Basic Info
     formData.append('project_name', document.getElementById('projectName').value);
     formData.append('project_slug', document.getElementById('projectSlugInput').value);
     formData.append('category', document.getElementById('projectCategory').value);
@@ -709,8 +663,6 @@ function getFormData() {
     formData.append('tagline', document.getElementById('tagline').value);
     formData.append('github_url', document.getElementById('githubUrl').value);
     formData.append('demo_url', document.getElementById('demoUrl').value);
-    
-    // Images
     formData.append('hero_image', document.getElementById('heroImage').value.trim());
     
     const bannerImage = document.getElementById('bannerImage');
@@ -718,17 +670,14 @@ function getFormData() {
         formData.append('banner_image', bannerImage.files[0]);
     }
     
-    // Overview, Problem, Solution
     formData.append('overview', document.getElementById('overview').value);
     formData.append('problem_statement', document.getElementById('problemStatement').value);
     formData.append('solution', document.getElementById('solution').value);
     
-    // SEO
     formData.append('meta_title', document.getElementById('metaTitle').value);
     formData.append('meta_description', document.getElementById('metaDescription').value);
     formData.append('meta_keywords', document.getElementById('metaKeywords').value);
     
-    // Navigation - Using IDs
     const prevProject = document.getElementById('prevProject');
     const nextProject = document.getElementById('nextProject');
     formData.append('prev_project', prevProject ? prevProject.value : '');
@@ -836,7 +785,7 @@ function getFormData() {
 }
 
 // ==================================================
-// SUBMIT FORM - ID BASED
+// SUBMIT FORM
 // ==================================================
 
 document.getElementById('projectForm').addEventListener('submit', async (e) => {
@@ -846,7 +795,6 @@ document.getElementById('projectForm').addEventListener('submit', async (e) => {
     const projectId = document.getElementById('projectSlug')?.value || '';
     const formData = getFormData();
     
-    // Validate required fields
     if (!formData.get('project_name') || !formData.get('project_slug') || !formData.get('category')) {
         showToast('Please fill in all required fields (Name, Slug, Category).', 'error');
         return;
@@ -896,13 +844,13 @@ document.getElementById('projectForm').addEventListener('submit', async (e) => {
             showToast(data.error || 'Failed to save project.', 'error');
         }
     } catch (error) {
-        showToast('Cannot connect to the live server. Please check your connection.', 'error');
+        showToast('Cannot connect to the live server.', 'error');
         console.error('Error saving project:', error);
     }
 });
 
 // ==================================================
-// EDIT PROJECT - ID BASED
+// EDIT PROJECT
 // ==================================================
 
 async function editProject(id) {
@@ -931,7 +879,6 @@ async function editProject(id) {
             document.getElementById('projectSlug').value = id;
             editingId = id;
             
-            // Fill basic info
             document.getElementById('projectName').value = project.project_name || '';
             document.getElementById('projectSlugInput').value = project.project_slug || '';
             document.getElementById('projectSlugInput').dataset.manual = 'true';
@@ -943,21 +890,17 @@ async function editProject(id) {
             document.getElementById('githubUrl').value = project.github_url || '';
             document.getElementById('demoUrl').value = project.demo_url || '';
             
-            // Overview, Problem, Solution
             document.getElementById('overview').value = project.overview || '';
             document.getElementById('problemStatement').value = project.problem_statement || '';
             document.getElementById('solution').value = project.solution || '';
             
-            // SEO
             document.getElementById('metaTitle').value = project.meta_title || '';
             document.getElementById('metaDescription').value = project.meta_description || '';
             document.getElementById('metaKeywords').value = project.meta_keywords || '';
             
-            // Navigation
             document.getElementById('prevProject').value = project.prev_project || '';
             document.getElementById('nextProject').value = project.next_project || '';
             
-            // Hero Image
             document.getElementById('heroImage').value = project.hero_image || '';
             
             if (project.hero_image) {
@@ -967,7 +910,6 @@ async function editProject(id) {
                 }
             }
             
-            // Banner Image
             if (project.banner_image) {
                 const preview = document.getElementById('bannerImagePreview');
                 if (preview) {
@@ -975,7 +917,7 @@ async function editProject(id) {
                 }
             }
             
-            // Clear dynamic containers
+            // Clear and refill dynamic containers
             document.getElementById('galleryContainer').innerHTML = '';
             document.getElementById('featuresContainer').innerHTML = '';
             document.getElementById('techStackContainer').innerHTML = '';
@@ -984,7 +926,6 @@ async function editProject(id) {
             document.getElementById('learningsContainer').innerHTML = '';
             document.getElementById('statisticsContainer').innerHTML = '';
             
-            // Reset counters
             galleryCounter = 0;
             featureCounter = 0;
             techCounter = 0;
@@ -993,49 +934,42 @@ async function editProject(id) {
             learningCounter = 0;
             statCounter = 0;
             
-            // Fill gallery
             if (project.gallery && Array.isArray(project.gallery)) {
                 project.gallery.forEach(item => {
                     addGalleryItem(item.image_path, item.title, item.description);
                 });
             }
             
-            // Fill features
             if (project.features && Array.isArray(project.features)) {
                 project.features.forEach(item => {
                     addFeature(item.icon, item.title, item.description);
                 });
             }
             
-            // Fill tech stack
             if (project.techStack && Array.isArray(project.techStack)) {
                 project.techStack.forEach(item => {
                     addTechItem(item.tech_name, item.tech_icon, item.tech_color, item.tech_category);
                 });
             }
             
-            // Fill timeline
             if (project.timeline && Array.isArray(project.timeline)) {
                 project.timeline.forEach(item => {
                     addTimelineItem(item.step_number, item.step_title, item.description);
                 });
             }
             
-            // Fill challenges
             if (project.challenges && Array.isArray(project.challenges)) {
                 project.challenges.forEach(item => {
                     addChallenge(item.icon, item.title, item.description, item.solution);
                 });
             }
             
-            // Fill learnings
             if (project.learnings && Array.isArray(project.learnings)) {
                 project.learnings.forEach(item => {
                     addLearning(item.learning_text);
                 });
             }
             
-            // Fill statistics
             if (project.statistics && Array.isArray(project.statistics)) {
                 project.statistics.forEach(item => {
                     addStatistic(item.stat_title, item.stat_value, item.stat_icon);
@@ -1052,13 +986,13 @@ async function editProject(id) {
             showToast('Failed to load project data.', 'error');
         }
     } catch (error) {
-        showToast('Cannot connect to the live server. Please check your connection.', 'error');
+        showToast('Cannot connect to the live server.', 'error');
         console.error('Error loading project:', error);
     }
 }
 
 // ==================================================
-// DELETE PROJECT - ID BASED
+// DELETE PROJECT
 // ==================================================
 
 function deleteProject(id) {
@@ -1092,7 +1026,7 @@ function deleteProject(id) {
                 showToast(data.error || 'Failed to delete project.', 'error');
             }
         } catch (error) {
-            showToast('Cannot connect to the live server. Please check your connection.', 'error');
+            showToast('Cannot connect to the live server.', 'error');
             console.error('Error deleting project:', error);
         }
     });
@@ -1372,11 +1306,10 @@ async function deleteContactMessage(id) {
 }
 
 // ==================================================
-// INITIALIZE WITH DEMO ITEMS
+// INITIALIZE
 // ==================================================
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Add initial demo items if containers exist and are empty
     if (document.getElementById('featuresContainer') && document.getElementById('featuresContainer').children.length === 0) {
         addFeature('fa-user-lock', 'User Authentication', 'Secure login and registration');
         addFeature('fa-boxes', 'Product Catalog', 'Manage products with categories');
@@ -1410,5 +1343,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-console.log('🚀 Admin Panel loaded successfully! (Production Ready)');
+console.log('🚀 Admin Panel loaded successfully!');
 console.log(`📡 API Base URL: ${API_BASE_URL}`);
