@@ -1,5 +1,5 @@
 // ==================================================
-// SERVER.JS - PRODUCTION READY (UPDATED)
+// SERVER.JS - PRODUCTION READY (FIXED - .env ONLY)
 // ==================================================
 
 require('dotenv').config();
@@ -29,7 +29,10 @@ if (!JWT_SECRET) {
     process.exit(1);
 }
 
-// Validate admin credentials are set
+// Check admin credentials
+console.log("🔐 Admin username configured:", !!process.env.ADMIN_USERNAME);
+console.log("🔐 Admin password configured:", !!process.env.ADMIN_PASSWORD);
+
 if (!process.env.ADMIN_USERNAME || !process.env.ADMIN_PASSWORD) {
     console.warn('⚠️ ADMIN_USERNAME or ADMIN_PASSWORD is not set in environment variables.');
     console.warn('⚠️ Admin login will not work until these are configured.');
@@ -75,7 +78,6 @@ if (process.env.FRONTEND_URL) {
 
 app.use(cors({
     origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
         
         if (allowedOrigins.indexOf(origin) !== -1 || NODE_ENV === 'development') {
@@ -157,7 +159,7 @@ pool.getConnection()
     });
 
 // ==================================================
-// AUTHENTICATION MIDDLEWARE - UPDATED (NO DATABASE)
+// AUTHENTICATION MIDDLEWARE - NO DATABASE
 // ==================================================
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
@@ -211,13 +213,27 @@ app.get('/api/health', (req, res) => {
 });
 
 // ==================================================
-// API ROUTES
+// AUTH STATUS ROUTE - SAFE DIAGNOSTIC
 // ==================================================
+app.get('/api/auth-status', (req, res) => {
+    res.json({
+        success: true,
+        usernameConfigured: !!process.env.ADMIN_USERNAME,
+        passwordConfigured: !!process.env.ADMIN_PASSWORD,
+        jwtSecretConfigured: !!process.env.JWT_SECRET
+    });
+});
 
-// --- LOGIN - UPDATED (USES .env ONLY) ---
+// ==================================================
+// LOGIN - USES .env ONLY (NO DATABASE)
+// ==================================================
 app.post('/api/login', async (req, res) => {
     try {
         const { username, password } = req.body;
+
+        console.log("🔐 Login attempt - Username received:", username);
+        console.log("🔐 Admin username configured:", !!process.env.ADMIN_USERNAME);
+        console.log("🔐 Admin password configured:", !!process.env.ADMIN_PASSWORD);
 
         if (!username || !password) {
             return res.status(400).json({
@@ -237,15 +253,19 @@ app.post('/api/login', async (req, res) => {
             });
         }
 
+        // Compare username (case-insensitive trim) and password (exact match)
         if (
-            username.trim() !== adminUsername.trim() ||
+            username.trim().toLowerCase() !== adminUsername.trim().toLowerCase() ||
             password !== adminPassword
         ) {
+            console.log("❌ Login failed - Invalid credentials");
             return res.status(401).json({
                 success: false,
                 error: 'Invalid username or password.'
             });
         }
+
+        console.log("✅ Login successful for user:", username);
 
         const token = jwt.sign(
             {
@@ -276,7 +296,9 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// --- PROJECTS CRUD ---
+// ==================================================
+// PROJECTS CRUD (UNCHANGED - ALL FUNCTIONALITY PRESERVED)
+// ==================================================
 
 // Get all projects
 app.get('/api/projects', async (req, res) => {
@@ -1009,4 +1031,5 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Server running on port ${PORT}`);
     console.log(`📁 Environment: ${NODE_ENV}`);
     console.log(`✅ Health check available at: /api/health`);
+    console.log(`🔐 Auth status available at: /api/auth-status`);
 });
