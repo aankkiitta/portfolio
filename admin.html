@@ -483,11 +483,11 @@
 
 
 
-    <!-- Reviews Content -->
+<!-- Reviews Content -->
 <div id="reviewsContent" class="content-section" style="display:none;">
     <div class="projects-header">
         <h3>All Reviews</h3>
-        <span id="reviewsCount" style="color:var(--text-muted);font-size:0.9rem;">0 reviews</span>
+        <span id="reviewsCount" style="color:var(--text-muted);font-size:0.9rem;">3 reviews</span>
     </div>
     <div class="table-wrapper">
         <table>
@@ -500,18 +500,83 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody id="reviewsTable"></tbody>
+            <tbody id="reviewsTable">
+                <tr>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <img src="https://ui-avatars.com/api/?name=Sarah+Johnson&background=6C4DFF&color=fff&size=32" alt="Sarah Johnson" style="width:32px;height:32px;border-radius:50%;object-fit:cover;" />
+                            <strong>Sarah Johnson</strong>
+                        </div>
+                    </td>
+                    <td>
+                        <span style="color:#fbbf24;font-size:0.9rem;">
+                            ★★★★★
+                        </span>
+                    </td>
+                    <td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                        Ankita delivered an outstanding full-stack solution for our platform. Her code quality and communication were top-notch. Highly recommend!
+                    </td>
+                    <td>Jan 15, 2026</td>
+                    <td>
+                        <button class="action-btn delete" onclick="alert('Delete review 1')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <img src="https://ui-avatars.com/api/?name=David+Chen&background=6C4DFF&color=fff&size=32" alt="David Chen" style="width:32px;height:32px;border-radius:50%;object-fit:cover;" />
+                            <strong>David Chen</strong>
+                        </div>
+                    </td>
+                    <td>
+                        <span style="color:#fbbf24;font-size:0.9rem;">
+                            ★★★★★
+                        </span>
+                    </td>
+                    <td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                        Working with Ankita was a pleasure. She quickly grasped the requirements and built a responsive, performant web application that exceeded our expectations.
+                    </td>
+                    <td>Jan 10, 2026</td>
+                    <td>
+                        <button class="action-btn delete" onclick="alert('Delete review 2')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <img src="https://ui-avatars.com/api/?name=Priya+Sharma&background=6C4DFF&color=fff&size=32" alt="Priya Sharma" style="width:32px;height:32px;border-radius:50%;object-fit:cover;" />
+                            <strong>Priya Sharma</strong>
+                        </div>
+                    </td>
+                    <td>
+                        <span style="color:#fbbf24;font-size:0.9rem;">
+                            ★★★★★
+                        </span>
+                    </td>
+                    <td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                        Ankita built our MVP from scratch. Her full-stack skills and ability to iterate fast helped us launch on time.
+                    </td>
+                    <td>Jan 5, 2026</td>
+                    <td>
+                        <button class="action-btn delete" onclick="alert('Delete review 3')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
         </table>
     </div>
 </div>
-
-
 
 <!-- Contact Messages Content -->
 <div id="contactContent" class="content-section" style="display:none;">
     <div class="projects-header">
         <h3>Contact Messages</h3>
-        <span id="contactCount" style="color:var(--text-muted);font-size:0.9rem;">0 messages</span>
+        <span id="contactCount" style="color:var(--text-muted);font-size:0.9rem;">4 messages</span>
     </div>
     <div class="table-wrapper">
         <table>
@@ -525,15 +590,67 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-            ryrth
-            <tbody id="contactTable"></tbody>
+            <tbody id="contactTable">
+                <tr>
+                    <td><strong>John Doe</strong></td>
+                    <td><a href="mailto:john@example.com" style="color:var(--primary);">john@example.com</a></td>
+                    <td>Project Inquiry</td>
+                    <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                        Hi Ankita, I'm interested in hiring you for a full-stack project. Please let me know your availability.
+                    </td>
+                    <td>Feb 20, 2026 10:30 AM</td>
+                    <td>
+                        <button class="action-btn delete" onclick="alert('Delete message 1')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Jane Smith</strong></td>
+                    <td><a href="mailto:jane@company.com" style="color:var(--primary);">jane@company.com</a></td>
+                    <td>Internship Opportunity</td>
+                    <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                        We're looking for a passionate developer intern. Your portfolio looks amazing!
+                    </td>
+                    <td>Feb 18, 2026 02:15 PM</td>
+                    <td>
+                        <button class="action-btn delete" onclick="alert('Delete message 2')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Mike Johnson</strong></td>
+                    <td><a href="mailto:mike@startup.io" style="color:var(--primary);">mike@startup.io</a></td>
+                    <td>Collaboration Request</td>
+                    <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                        I saw your farming website project and would love to collaborate on something similar for agriculture.
+                    </td>
+                    <td>Feb 15, 2026 09:00 AM</td>
+                    <td>
+                        <button class="action-btn delete" onclick="alert('Delete message 3')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Emily Davis</strong></td>
+                    <td><a href="mailto:emily@techcorp.com" style="color:var(--primary);">emily@techcorp.com</a></td>
+                    <td>Freelance Project</td>
+                    <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                        We need a full-stack developer for our e-commerce platform. Can you share your rates and timeline?
+                    </td>
+                    <td>Feb 12, 2026 11:45 AM</td>
+                    <td>
+                        <button class="action-btn delete" onclick="alert('Delete message 4')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
         </table>
     </div>
 </div>
-
-
-
-
 
     <!-- ==================================================
        SCRIPTS
