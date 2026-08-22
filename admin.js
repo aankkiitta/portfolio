@@ -1,17 +1,23 @@
 // ==================================================
-// ADMIN PANEL - MAIN JAVASCRIPT (PRODUCTION READY)
-// ==================================================
-
-// ==================================================
 // API CONFIGURATION - AUTO DETECT ENVIRONMENT
 // ==================================================
 
-// Auto-detect environment - uses window.location to determine if local or production
-const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:5000'
-    : 'https://portfolio-3-l63x.onrender.com'; // YOUR LIVE BACKEND URL
+// Get the current hostname
+const currentHost = window.location.hostname;
+const isLocal = currentHost === 'localhost' || currentHost === '127.0.0.1';
+
+// YOUR BACKEND URL - CHANGE THIS!
+const LIVE_BACKEND_URL = 'https://portfolio-3-l63x.onrender.com';
+
+const API_BASE_URL = isLocal
+    ? 'http://localhost:5000'  // Local development
+    : LIVE_BACKEND_URL;        // Production
 
 const API_URL = `${API_BASE_URL}/api`;
+
+console.log('🌐 Environment:', isLocal ? 'Local' : 'Production');
+console.log('📡 API Base URL:', API_BASE_URL);
+console.log('📡 API URL:', API_URL);
 
 // ==================================================
 // AUTHENTICATION HELPERS
@@ -69,13 +75,18 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     submitBtn.disabled = true;
     
     try {
+        console.log('🔐 Attempting login to:', `${API_URL}/login`);
+        
         const response = await fetch(`${API_URL}/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
         });
         
+        console.log('📡 Response status:', response.status);
+        
         const data = await response.json();
+        console.log('📡 Response data:', data);
         
         if (response.ok && data.success && data.token) {
             token = data.token;
@@ -94,9 +105,9 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             errorEl.style.display = 'block';
         }
     } catch (error) {
+        console.error('❌ Login error:', error);
         errorEl.textContent = 'Cannot connect to the live server. Please check your connection.';
         errorEl.style.display = 'block';
-        console.error('Login error:', error);
     } finally {
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;
