@@ -302,7 +302,7 @@
         }
 
         /* ==================================================
-           PROJECTS GRID - UPDATED WITH ENHANCEMENTS
+           PROJECTS GRID
         ================================================== */
         .all-projects-grid {
             display: grid;
@@ -384,34 +384,28 @@
             border-radius: 20px;
             font-weight: 600;
         }
-.live-badge{
-    position:absolute;
-    top:15px;
-    left:15px;
 
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap:6px;
+        .live-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: auto;
+            max-width: max-content;
+            white-space: nowrap;
+            padding: 5px 12px;
+            background: #22c55e;
+            color: #fff;
+            border-radius: 999px;
+            font-size: .72rem;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, .35);
+            z-index: 5;
+        }
 
-    width:auto;
-    max-width:max-content;
-    white-space:nowrap;
-
-    padding:5px 12px;
-
-    background:#22c55e;
-    color:#fff;
-
-    border-radius:999px;
-
-    font-size:.72rem;
-    font-weight:600;
-
-    box-shadow:0 4px 12px rgba(34,197,94,.35);
-
-    z-index:5;
-}
         .live-badge-archived {
             background: #6b7280;
             box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
@@ -425,6 +419,11 @@
             background: #fff;
             border-radius: 50%;
             animation: dotBlink 1.5s ease-in-out infinite;
+        }
+
+        .live-badge-archived .live-dot {
+            animation: none;
+            background: #d1d5db;
         }
 
         @keyframes livePulse {
@@ -468,7 +467,6 @@
             flex: 1;
         }
 
-        /* Project Date */
         .project-date {
             display: flex;
             align-items: center;
@@ -486,7 +484,6 @@
             opacity: 0.7;
         }
 
-        /* Technology Icons Row */
         .project-tech-icons {
             display: flex;
             flex-wrap: wrap;
@@ -517,7 +514,6 @@
             color: #fff;
         }
 
-        /* Tooltip for tech icons */
         .tech-icon::after {
             content: attr(title);
             position: absolute;
@@ -549,7 +545,6 @@
             border-color: var(--border-color);
         }
 
-        /* Enhanced Project Buttons */
         .project-links {
             display: flex;
             gap: 12px;
@@ -557,39 +552,41 @@
             margin-top: auto;
         }
 
-    .project-btn{
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    padding: 6px 14px;
-    border-radius: 30px;
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 1;
-    text-decoration: none;
-    transition: all .3s ease;
-    position: relative;
-    overflow: hidden;
-}
+        .project-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1;
+            text-decoration: none;
+            transition: all .3s ease;
+            position: relative;
+            overflow: hidden;
+        }
 
-.project-btn i{
-    font-size: 12px;
-}
-     .github-btn,
-.demo-btn {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-    border: 1.5px solid var(--border-color);
-}
+        .project-btn i {
+            font-size: 12px;
+        }
 
-.github-btn:hover,
-.demo-btn:hover {
-    transform: translateY(-2px);
-    border-color: var(--primary);
-    color: var(--primary);
-    box-shadow: 0 8px 24px rgba(108, 77, 255, 0.1);
-}
+        .github-btn,
+        .demo-btn {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1.5px solid var(--border-color);
+        }
+
+        .github-btn:hover,
+        .demo-btn:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 8px 24px rgba(108, 77, 255, 0.1);
+        }
+
         /* Stats */
         .projects-stats {
             display: grid;
@@ -626,6 +623,65 @@
             color: var(--text-muted);
             font-weight: 500;
             transition: color 0.5s;
+        }
+
+        /* ==================================================
+           LOADING & ERROR STATES
+        ================================================== */
+        .loading-state,
+        .no-projects-state,
+        .error-state {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            text-align: center;
+            min-height: 300px;
+        }
+
+        .loading-state .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-state p,
+        .no-projects-state p,
+        .error-state p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .no-projects-state i,
+        .error-state i {
+            font-size: 3rem;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .error-state i {
+            color: #ef4444;
+            opacity: 0.7;
+        }
+
+        .error-state small {
+            display: block;
+            margin-top: 8px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 400;
         }
 
         /* ==================================================
@@ -800,12 +856,6 @@
                 height: 160px;
             }
 
-            .live-badge {
-                right: 60px;
-                padding: 3px 10px;
-                font-size: 0.6rem;
-            }
-
             .tech-icon {
                 width: 30px;
                 height: 30px;
@@ -826,6 +876,16 @@
                 bottom: 14px;
                 padding: 9px 14px;
                 font-size: .78rem;
+            }
+
+            .live-badge {
+                font-size: 0.65rem;
+                padding: 4px 10px;
+            }
+
+            .live-dot {
+                width: 5px;
+                height: 5px;
             }
         }
 
@@ -878,17 +938,6 @@
                 height: 140px;
             }
 
-            .live-badge {
-                right: 50px;
-                padding: 2px 8px;
-                font-size: 0.55rem;
-            }
-
-            .live-dot {
-                width: 4px;
-                height: 4px;
-            }
-
             .tech-icon {
                 width: 26px;
                 height: 26px;
@@ -919,6 +968,26 @@
 
             .back-to-portfolio i {
                 font-size: .8rem;
+            }
+
+            .live-badge {
+                font-size: 0.55rem;
+                padding: 3px 8px;
+                gap: 4px;
+                top: 10px;
+                left: 10px;
+            }
+
+            .live-dot {
+                width: 4px;
+                height: 4px;
+            }
+
+            .project-tag {
+                font-size: 10px;
+                padding: 4px 10px;
+                top: 10px;
+                right: 10px;
             }
         }
     </style>
@@ -981,357 +1050,22 @@
                 <button class="filter-btn" data-filter="business">Business</button>
             </div>
 
-            <!-- Projects Grid -->
+            <!-- Projects Grid - Dynamically loaded -->
             <div class="all-projects-grid" id="allProjectsGrid">
-                <!-- Project 1 -->
-                <div class="project-card" data-category="fullstack ecommerce">
-                    <div class="project-image">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23dbeafe'/%3E%3Ctext x='50' y='110' font-family='Arial' font-size='32' fill='%236C4DFF'%3E🛒 E-Commerce%3C/text%3E%3C/svg%3E" alt="E-Commerce Website">
-                        <span class="project-tag">Full Stack</span>
-                        <span class="live-badge">
-                            <span class="live-dot"></span>
-                            Live
-                        </span>
-                    </div>
-                    <div class="project-content">
-                        <h3>🛒 E-Commerce Platform</h3>
-                        <p>A complete online shopping platform with product catalog, user authentication, shopping cart, and secure payment integration.</p>
-                        <div class="project-date">
-                            <i class="fas fa-calendar-alt"></i> July 2026
-                        </div>
-                        <div class="project-tech-icons">
-                            <span class="tech-icon" title="React">
-                                <i class="fab fa-react"></i>
-                            </span>
-                            <span class="tech-icon" title="Node.js">
-                                <i class="fab fa-node-js"></i>
-                            </span>
-                            <span class="tech-icon" title="Express.js">
-                                <i class="fas fa-server"></i>
-                            </span>
-                            <span class="tech-icon" title="MongoDB">
-                                <i class="fas fa-database"></i>
-                            </span>
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/yourusername/ecommerce" target="_blank" rel="noopener noreferrer" class="project-btn github-btn">
-                                <i class="fab fa-github"></i> Code
-                            </a>
-                            <a href="https://your-ecommerce-demo.vercel.app" target="_blank" rel="noopener noreferrer" class="project-btn demo-btn">
-                                <i class="fas fa-external-link-alt"></i> Demo
-                            </a>
- <a href="detailed-project.html?id=5" class="project-btn demo-btn">
-    <i class="fas fa-external-link-alt"></i> View
-</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 2 -->
-                <div class="project-card" data-category="fullstack business">
-                    <div class="project-image">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23e0e7ff'/%3E%3Ctext x='50' y='110' font-family='Arial' font-size='28' fill='%236C4DFF'%3E🏗 Contractor%20Mgmt%3C/text%3E%3C/svg%3E" alt="Contractor Management">
-                        <span class="project-tag">Business</span>
-                        <span class="live-badge">
-                            <span class="live-dot"></span>
-                            Live
-                        </span>
-                    </div>
-                    <div class="project-content">
-                        <h3>🏗 Contractor Management System</h3>
-                        <p>Professional business platform for contractor companies with service showcase, portfolio management, and enquiry system.</p>
-                        <div class="project-date">
-                            <i class="fas fa-calendar-alt"></i> June 2026
-                        </div>
-                        <div class="project-tech-icons">
-                            <span class="tech-icon" title="HTML5">
-                                <i class="fab fa-html5"></i>
-                            </span>
-                            <span class="tech-icon" title="CSS3">
-                                <i class="fab fa-css3-alt"></i>
-                            </span>
-                            <span class="tech-icon" title="JavaScript">
-                                <i class="fab fa-js"></i>
-                            </span>
-                            <span class="tech-icon" title="Node.js">
-                                <i class="fab fa-node-js"></i>
-                            </span>
-                            <span class="tech-icon" title="Express.js">
-                                <i class="fas fa-server"></i>
-                            </span>
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/yourusername/contractor-mgmt" target="_blank" rel="noopener noreferrer" class="project-btn github-btn">
-                                <i class="fab fa-github"></i> Code
-                            </a>
-                            <a href="https://your-contractor-demo.vercel.app" target="_blank" rel="noopener noreferrer" class="project-btn demo-btn">
-                                <i class="fas fa-external-link-alt"></i> Demo
-                            </a>
-                             <a href="detailed-project.html?id=3" class="project-btn demo-btn">
-    <i class="fas fa-external-link-alt"></i> View
-</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 3 -->
-                <div class="project-card" data-category="fullstack">
-                    <div class="project-image">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23f3e8ff'/%3E%3Ctext x='50' y='110' font-family='Arial' font-size='32' fill='%236C4DFF'%3E🌱 Farming%3C/text%3E%3C/svg%3E" alt="Farming Website">
-                        <span class="project-tag">Full Stack</span>
-                        <span class="live-badge">
-                            <span class="live-dot"></span>
-                            Live
-                        </span>
-                    </div>
-                    <div class="project-content">
-                        <h3>🌱 Farming Information Platform</h3>
-                        <p>An agriculture platform helping farmers explore crop information, farming techniques, and agricultural best practices.</p>
-                        <div class="project-date">
-                            <i class="fas fa-calendar-alt"></i> May 2026
-                        </div>
-                        <div class="project-tech-icons">
-                            <span class="tech-icon" title="HTML5">
-                                <i class="fab fa-html5"></i>
-                            </span>
-                            <span class="tech-icon" title="CSS3">
-                                <i class="fab fa-css3-alt"></i>
-                            </span>
-                            <span class="tech-icon" title="JavaScript">
-                                <i class="fab fa-js"></i>
-                            </span>
-                            <span class="tech-icon" title="Node.js">
-                                <i class="fab fa-node-js"></i>
-                            </span>
-                            <span class="tech-icon" title="MySQL">
-                                <i class="fas fa-database"></i>
-                            </span>
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/yourusername/farming-platform" target="_blank" rel="noopener noreferrer" class="project-btn github-btn">
-                                <i class="fab fa-github"></i> Code
-                            </a>
-                            <a href="https://your-farming-demo.vercel.app" target="_blank" rel="noopener noreferrer" class="project-btn demo-btn">
-                                <i class="fas fa-external-link-alt"></i> Demo
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 4 -->
-                <div class="project-card" data-category="frontend">
-                    <div class="project-image">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23fce7f3'/%3E%3Ctext x='50' y='110' font-family='Arial' font-size='32' fill='%236C4DFF'%3E🎨 Portfolio%3C/text%3E%3C/svg%3E" alt="Portfolio Website">
-                        <span class="project-tag">Frontend</span>
-                        <span class="live-badge">
-                            <span class="live-dot"></span>
-                            Live
-                        </span>
-                    </div>
-                    <div class="project-content">
-                        <h3>🎨 Personal Portfolio Website</h3>
-                        <p>A modern, responsive portfolio website showcasing skills, projects, and professional experience with a premium design.</p>
-                        <div class="project-date">
-                            <i class="fas fa-calendar-alt"></i> April 2026
-                        </div>
-                        <div class="project-tech-icons">
-                            <span class="tech-icon" title="HTML5">
-                                <i class="fab fa-html5"></i>
-                            </span>
-                            <span class="tech-icon" title="CSS3">
-                                <i class="fab fa-css3-alt"></i>
-                            </span>
-                            <span class="tech-icon" title="JavaScript">
-                                <i class="fab fa-js"></i>
-                            </span>
-                            <span class="tech-icon" title="GSAP">
-                                <i class="fas fa-bolt"></i>
-                            </span>
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/yourusername/portfolio" target="_blank" rel="noopener noreferrer" class="project-btn github-btn">
-                                <i class="fab fa-github"></i> Code
-                            </a>
-                            <a href="https://your-portfolio.vercel.app" target="_blank" rel="noopener noreferrer" class="project-btn demo-btn">
-                                <i class="fas fa-external-link-alt"></i> Demo
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 5 -->
-                <div class="project-card" data-category="backend ecommerce">
-                    <div class="project-image">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23d1fae5'/%3E%3Ctext x='50' y='110' font-family='Arial' font-size='28' fill='%236C4DFF'%3E🛍️ REST%20API%3C/text%3E%3C/svg%3E" alt="REST API">
-                        <span class="project-tag">Backend</span>
-                        <span class="live-badge live-badge-archived">
-                            <span class="live-dot"></span>
-                            Archived
-                        </span>
-                    </div>
-                    <div class="project-content">
-                        <h3>🛍️ E-Commerce REST API</h3>
-                        <p>A robust RESTful API for e-commerce applications with authentication, product management, order processing, and payment integration.</p>
-                        <div class="project-date">
-                            <i class="fas fa-calendar-alt"></i> March 2026
-                        </div>
-                        <div class="project-tech-icons">
-                            <span class="tech-icon" title="Node.js">
-                                <i class="fab fa-node-js"></i>
-                            </span>
-                            <span class="tech-icon" title="Express.js">
-                                <i class="fas fa-server"></i>
-                            </span>
-                            <span class="tech-icon" title="MongoDB">
-                                <i class="fas fa-database"></i>
-                            </span>
-                            <span class="tech-icon" title="JWT">
-                                <i class="fas fa-lock"></i>
-                            </span>
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/yourusername/ecommerce-api" target="_blank" rel="noopener noreferrer" class="project-btn github-btn">
-                                <i class="fab fa-github"></i> Code
-                            </a>
-                            <a href="https://your-api-docs.vercel.app" target="_blank" rel="noopener noreferrer" class="project-btn demo-btn">
-                                <i class="fas fa-external-link-alt"></i> API Docs
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 6 -->
-                <div class="project-card" data-category="frontend business">
-                    <div class="project-image">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23fef3c7'/%3E%3Ctext x='50' y='110' font-family='Arial' font-size='28' fill='%236C4DFF'%3E🏢 Corporate%20Site%3C/text%3E%3C/svg%3E" alt="Corporate Website">
-                        <span class="project-tag">Frontend</span>
-                        <span class="live-badge">
-                            <span class="live-dot"></span>
-                            Live
-                        </span>
-                    </div>
-                    <div class="project-content">
-                        <h3>🏢 Corporate Landing Page</h3>
-                        <p>A professional corporate landing page with modern design, smooth animations, and responsive layout for business branding.</p>
-                        <div class="project-date">
-                            <i class="fas fa-calendar-alt"></i> February 2026
-                        </div>
-                        <div class="project-tech-icons">
-                            <span class="tech-icon" title="HTML5">
-                                <i class="fab fa-html5"></i>
-                            </span>
-                            <span class="tech-icon" title="CSS3">
-                                <i class="fab fa-css3-alt"></i>
-                            </span>
-                            <span class="tech-icon" title="JavaScript">
-                                <i class="fab fa-js"></i>
-                            </span>
-                            <span class="tech-icon" title="Bootstrap">
-                                <i class="fab fa-bootstrap"></i>
-                            </span>
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/yourusername/corporate-site" target="_blank" rel="noopener noreferrer" class="project-btn github-btn">
-                                <i class="fab fa-github"></i> Code
-                            </a>
-                            <a href="https://your-corporate-demo.vercel.app" target="_blank" rel="noopener noreferrer" class="project-btn demo-btn">
-                                <i class="fas fa-external-link-alt"></i> Demo
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 7 -->
-                <div class="project-card" data-category="fullstack">
-                    <div class="project-image">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23ede9fe'/%3E%3Ctext x='50' y='110' font-family='Arial' font-size='28' fill='%236C4DFF'%3E📊 Dashboard%3C/text%3E%3C/svg%3E" alt="Admin Dashboard">
-                        <span class="project-tag">Full Stack</span>
-                        <span class="live-badge">
-                            <span class="live-dot"></span>
-                            Live
-                        </span>
-                    </div>
-                    <div class="project-content">
-                        <h3>📊 Admin Dashboard</h3>
-                        <p>A comprehensive admin dashboard with user management, analytics, real-time data visualization, and content management system.</p>
-                        <div class="project-date">
-                            <i class="fas fa-calendar-alt"></i> January 2026
-                        </div>
-                        <div class="project-tech-icons">
-                            <span class="tech-icon" title="React">
-                                <i class="fab fa-react"></i>
-                            </span>
-                            <span class="tech-icon" title="Node.js">
-                                <i class="fab fa-node-js"></i>
-                            </span>
-                            <span class="tech-icon" title="Express.js">
-                                <i class="fas fa-server"></i>
-                            </span>
-                            <span class="tech-icon" title="PostgreSQL">
-                                <i class="fas fa-database"></i>
-                            </span>
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/yourusername/admin-dashboard" target="_blank" rel="noopener noreferrer" class="project-btn github-btn">
-                                <i class="fab fa-github"></i> Code
-                            </a>
-                            <a href="https://your-dashboard-demo.vercel.app" target="_blank" rel="noopener noreferrer" class="project-btn demo-btn">
-                                <i class="fas fa-external-link-alt"></i> Demo
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Project 8 -->
-                <div class="project-card" data-category="backend">
-                    <div class="project-image">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='200' viewBox='0 0 400 200'%3E%3Crect width='400' height='200' fill='%23fce4ec'/%3E%3Ctext x='50' y='110' font-family='Arial' font-size='28' fill='%236C4DFF'%3E🔐 Auth%20API%3C/text%3E%3C/svg%3E" alt="Authentication API">
-                        <span class="project-tag">Backend</span>
-                        <span class="live-badge live-badge-archived">
-                            <span class="live-dot"></span>
-                            Archived
-                        </span>
-                    </div>
-                    <div class="project-content">
-                        <h3>🔐 Authentication Service</h3>
-                        <p>A secure authentication service with JWT, OAuth2, password reset, email verification, and role-based access control.</p>
-                        <div class="project-date">
-                            <i class="fas fa-calendar-alt"></i> 2025
-                        </div>
-                        <div class="project-tech-icons">
-                            <span class="tech-icon" title="Node.js">
-                                <i class="fab fa-node-js"></i>
-                            </span>
-                            <span class="tech-icon" title="Express.js">
-                                <i class="fas fa-server"></i>
-                            </span>
-                            <span class="tech-icon" title="JWT">
-                                <i class="fas fa-lock"></i>
-                            </span>
-                            <span class="tech-icon" title="MongoDB">
-                                <i class="fas fa-database"></i>
-                            </span>
-                        </div>
-                        <div class="project-links">
-                            <a href="https://github.com/yourusername/auth-service" target="_blank" rel="noopener noreferrer" class="project-btn github-btn">
-                                <i class="fab fa-github"></i> Code
-                            </a>
-                            <a href="https://your-auth-demo.vercel.app" target="_blank" rel="noopener noreferrer" class="project-btn demo-btn">
-                                <i class="fas fa-external-link-alt"></i> Demo
-                            </a>
-                        </div>
-                    </div>
+                <div class="loading-state" id="loadingState">
+                    <div class="spinner"></div>
+                    <p>Loading projects...</p>
                 </div>
             </div>
 
             <!-- Stats -->
             <div class="projects-stats">
                 <div class="stat-item">
-                    <span class="stat-number" id="projectCount">8</span>
+                    <span class="stat-number" id="projectCount">0</span>
                     <span class="stat-label">Total Projects</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-number">5+</span>
+                    <span class="stat-number" id="techCount">0+</span>
                     <span class="stat-label">Technologies Used</span>
                 </div>
                 <div class="stat-item">
@@ -1397,53 +1131,267 @@
         });
 
         // ==================================================
+        // API CONFIGURATION
+        // ==================================================
+        const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:5000'
+            : 'https://portfolio-3-l63x.onrender.com';
+
+        const API_URL = `${API_BASE_URL}/api`;
+
+        console.log('🌐 Environment:', window.location.hostname === 'localhost' ? 'Local' : 'Production');
+        console.log('📡 API Base URL:', API_BASE_URL);
+
+        // ==================================================
+        // LOAD PROJECTS FROM DATABASE
+        // ==================================================
+        async function loadProjects() {
+            const grid = document.getElementById('allProjectsGrid');
+            const projectCountEl = document.getElementById('projectCount');
+            const techCountEl = document.getElementById('techCount');
+
+            try {
+                // Show loading state
+                grid.innerHTML = `
+                    <div class="loading-state" id="loadingState">
+                        <div class="spinner"></div>
+                        <p>Loading projects...</p>
+                    </div>
+                `;
+
+                console.log('🔍 Fetching projects from:', `${API_URL}/projects`);
+
+                const response = await fetch(`${API_URL}/projects`);
+
+                console.log('📡 Response status:', response.status);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const projects = await response.json();
+
+                console.log('✅ Projects received:', projects.length);
+
+                // Clear grid
+                grid.innerHTML = '';
+
+                // Check if no projects
+                if (!projects || projects.length === 0) {
+                    grid.innerHTML = `
+                        <div class="no-projects-state">
+                            <i class="fas fa-folder-open"></i>
+                            <p>No projects found.</p>
+                        </div>
+                    `;
+                    if (projectCountEl) projectCountEl.textContent = '0';
+                    if (techCountEl) techCountEl.textContent = '0';
+                    return;
+                }
+
+                // Update project count
+                if (projectCountEl) {
+                    projectCountEl.textContent = projects.length;
+                }
+
+                // Count unique technologies
+                const techSet = new Set();
+                projects.forEach(p => {
+                    if (p.techStack && Array.isArray(p.techStack)) {
+                        p.techStack.forEach(t => {
+                            if (t.tech_name) techSet.add(t.tech_name);
+                        });
+                    }
+                });
+
+                if (techCountEl) {
+                    techCountEl.textContent = techSet.size > 0 ? techSet.size + '+' : '5+';
+                }
+
+                // Render each project
+                projects.forEach((project, index) => {
+                    const card = createProjectCard(project, index);
+                    grid.appendChild(card);
+                });
+
+                console.log('✅ Rendered', projects.length, 'projects');
+
+                // Re-apply filters after rendering
+                applyFilters();
+
+            } catch (error) {
+                console.error('❌ Error loading projects:', error);
+                grid.innerHTML = `
+                    <div class="error-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Unable to load projects. Please check the server connection.</p>
+                        <small>${error.message}</small>
+                    </div>
+                `;
+            }
+        }
+
+        // ==================================================
+        // CREATE PROJECT CARD
+        // ==================================================
+        function createProjectCard(project, index) {
+            const card = document.createElement('div');
+            card.className = 'project-card';
+            
+            // Build category string for filtering
+            let categoryString = project.category ? project.category.toLowerCase() : '';
+            if (categoryString === 'full stack') categoryString = 'fullstack';
+            if (categoryString === 'e-commerce') categoryString = 'ecommerce';
+            card.dataset.category = categoryString;
+
+            // Determine status badge
+            const status = project.status || 'Live';
+            const isLive = status === 'Live';
+            const badgeClass = isLive ? 'live-badge' : 'live-badge live-badge-archived';
+            const dotClass = isLive ? 'live-dot' : 'live-dot';
+
+            // Get tech stack icons (if available)
+            let techIconsHtml = '';
+            if (project.techStack && Array.isArray(project.techStack) && project.techStack.length > 0) {
+                project.techStack.slice(0, 6).forEach(tech => {
+                    const iconClass = tech.tech_icon || 'fas fa-code';
+                    const tooltip = tech.tech_name || 'Technology';
+                    techIconsHtml += `
+                        <span class="tech-icon" title="${tooltip}">
+                            <i class="${iconClass}"></i>
+                        </span>
+                    `;
+                });
+            }
+
+            // Handle image
+            let imageHtml = '';
+            if (project.hero_image) {
+                const imageUrl = project.hero_image.startsWith('http') 
+                    ? project.hero_image 
+                    : `${API_BASE_URL}${project.hero_image}`;
+                imageHtml = `<img src="${imageUrl}" alt="${project.project_name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22 viewBox=%220 0 400 200%22%3E%3Crect width=%22400%22 height=%22200%22 fill=%22%23f3f0ff%22/%3E%3Ctext x=%2250%22 y=%22110%22 font-family=%22Arial%22 font-size=%2232%22 fill=%22%236C4DFF%22%3E📁 Project%3C/text%3E%3C/svg%3E'">`;
+            } else {
+                imageHtml = `<img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22 viewBox=%220 0 400 200%22%3E%3Crect width=%22400%22 height=%22200%22 fill=%22%23f3f0ff%22/%3E%3Ctext x=%2250%22 y=%22110%22 font-family=%22Arial%22 font-size=%2232%22 fill=%22%236C4DFF%22%3E📁 ${project.project_name || 'Project'}%3C/text%3E%3C/svg%3E" alt="${project.project_name || 'Project'}">`;
+            }
+
+            // Get category tag
+            const categoryTag = project.category || 'General';
+
+            // Get date
+            const date = project.completion_date 
+                ? new Date(project.completion_date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+                : '';
+
+            // Get URLs
+            const githubUrl = project.github_url || '#';
+            const demoUrl = project.demo_url || '#';
+            const projectId = project.id || '';
+
+            card.innerHTML = `
+                <div class="project-image">
+                    ${imageHtml}
+                    <span class="project-tag">${categoryTag}</span>
+                    <span class="${badgeClass}">
+                        <span class="${dotClass}"></span>
+                        ${status}
+                    </span>
+                </div>
+                <div class="project-content">
+                    <h3>${project.project_name || 'Untitled Project'}</h3>
+                    <p>${project.tagline || project.overview || 'No description available.'}</p>
+                    ${date ? `
+                    <div class="project-date">
+                        <i class="fas fa-calendar-alt"></i> ${date}
+                    </div>
+                    ` : ''}
+                    ${techIconsHtml ? `
+                    <div class="project-tech-icons">
+                        ${techIconsHtml}
+                    </div>
+                    ` : ''}
+                    <div class="project-links">
+                        ${githubUrl !== '#' ? `
+                        <a href="${githubUrl}" target="_blank" rel="noopener noreferrer" class="project-btn github-btn">
+                            <i class="fab fa-github"></i> Code
+                        </a>
+                        ` : ''}
+                        ${demoUrl !== '#' ? `
+                        <a href="${demoUrl}" target="_blank" rel="noopener noreferrer" class="project-btn demo-btn">
+                            <i class="fas fa-external-link-alt"></i> Demo
+                        </a>
+                        ` : ''}
+                        ${projectId ? `
+                        <a href="detailed-project.html?id=${projectId}" class="project-btn demo-btn">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+
+            // Add animation delay
+            card.style.animationDelay = (index * 0.05) + 's';
+
+            return card;
+        }
+
+        // ==================================================
         // PROJECT FILTERS
         // ==================================================
-        (function() {
+        function applyFilters() {
             const filterButtons = document.querySelectorAll('.filter-btn');
             const projectCards = document.querySelectorAll('.all-projects-grid .project-card');
             const projectCount = document.getElementById('projectCount');
 
-            function filterProjects(category) {
-                let visibleCount = 0;
+            let visibleCount = 0;
 
-                projectCards.forEach(card => {
-                    const categories = card.dataset.category.split(' ');
-                    const shouldShow = category === 'all' || categories.includes(category);
-
-                    if (shouldShow) {
-                        card.classList.remove('hidden');
-                        visibleCount++;
-                        // Re-trigger animation
-                        card.style.animation = 'none';
-                        requestAnimationFrame(() => {
-                            card.style.animation =
-                                `fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards`;
-                            card.style.animationDelay = (visibleCount * 0.05) + 's';
-                        });
-                    } else {
-                        card.classList.add('hidden');
-                    }
-                });
-
-                if (projectCount) {
-                    projectCount.textContent = visibleCount;
+            // Get active filter
+            let activeFilter = 'all';
+            filterButtons.forEach(btn => {
+                if (btn.classList.contains('active')) {
+                    activeFilter = btn.dataset.filter;
                 }
+            });
+
+            projectCards.forEach(card => {
+                const categories = card.dataset.category ? card.dataset.category.split(' ') : [];
+                const shouldShow = activeFilter === 'all' || categories.includes(activeFilter);
+
+                if (shouldShow) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            if (projectCount) {
+                projectCount.textContent = visibleCount;
             }
+        }
+
+        // ==================================================
+        // SETUP FILTER BUTTONS
+        // ==================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
 
             filterButtons.forEach(btn => {
                 btn.addEventListener('click', function() {
                     filterButtons.forEach(b => b.classList.remove('active'));
                     this.classList.add('active');
-
-                    const filter = this.dataset.filter;
-                    filterProjects(filter);
+                    applyFilters();
                 });
             });
+        });
 
-            // Initialize with 'all'
-            filterProjects('all');
-        })();
+        // ==================================================
+        // LOAD PROJECTS ON PAGE LOAD
+        // ==================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProjects();
+        });
     </script>
 
 </body>
