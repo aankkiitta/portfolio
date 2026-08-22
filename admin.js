@@ -1222,6 +1222,10 @@ async function deleteReview(id) {
 // CONTACT MESSAGES MANAGEMENT
 // ==================================================
 
+// ==================================================
+// CONTACT MESSAGES MANAGEMENT
+// ==================================================
+
 async function loadContactMessages() {
     try {
         const token = getToken();
@@ -1233,7 +1237,7 @@ async function loadContactMessages() {
         console.log('🔍 Fetching contact messages from:', `${API_URL}/contact-messages`);
         
         const response = await fetch(`${API_URL}/contact-messages`, {
-            headers: getAuthHeaders()
+            headers: getAuthHeaders()  // <-- THIS IS THE KEY FIX
         });
         
         console.log('📡 Response status:', response.status);
