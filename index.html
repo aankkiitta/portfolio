@@ -1693,13 +1693,43 @@ section {
   transition: border-color 0.5s;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-
 .typing-text {
   display: flex;
   align-items: center;
   gap: 10px;
   font-size: 2rem;
   font-weight: 600;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .typing-text {
+    font-size: 1.2rem !important;
+    gap: 6px;
+    line-height: 1.3;
+  }
+
+  .typing-text .star {
+    font-size: 1rem;
+  }
+
+  .typing-text .cursor {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .typing-text {
+    font-size: 1rem !important;
+  }
+
+  .typing-text .star {
+    font-size: 0.85rem;
+  }
+
+  .typing-text .cursor {
+    font-size: 0.95rem;
+  }
 }
 .star {
   color: #c3bcbc;
