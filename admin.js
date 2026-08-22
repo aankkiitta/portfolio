@@ -6,7 +6,6 @@
 // API CONFIGURATION
 // ==================================================
 
-// Auto-detect environment - CHANGE THIS FOR PRODUCTION!
 const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:5000'
     : 'https://YOUR-LIVE-BACKEND-DOMAIN'; // CHANGE THIS!
@@ -23,18 +22,14 @@ function getToken() {
 
 function getAuthHeaders() {
     const token = getToken();
-    if (!token) {
-        return {};
-    }
-    return {
-        'Authorization': `Bearer ${token}`
-    };
+    if (!token) return {};
+    return { 'Authorization': `Bearer ${token}` };
 }
 
 function handleUnauthorized() {
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminUser');
-    alert('Your session has expired. Please login again.');
+    showToast('Your session has expired. Please login again.', 'error');
     document.getElementById('dashboardScreen').style.display = 'none';
     document.getElementById('loginScreen').style.display = 'flex';
     document.getElementById('loginForm').reset();
@@ -43,12 +38,7 @@ function handleUnauthorized() {
 
 function getImageUrl(imagePath) {
     if (!imagePath) return '';
-    
-    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
-        return imagePath;
-    }
-    
-    // Handle /uploads/... paths
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) return imagePath;
     return `${API_BASE_URL}${imagePath}`;
 }
 
@@ -72,7 +62,6 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     const password = document.getElementById('loginPassword').value;
     const errorEl = document.getElementById('loginError');
     
-    // Show loading state
     const submitBtn = e.target.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
     submitBtn.textContent = 'Logging in...';
@@ -92,9 +81,6 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             currentUser = data.user;
             localStorage.setItem('adminToken', token);
             localStorage.setItem('adminUser', JSON.stringify(currentUser));
-            
-            console.log('✅ Login successful');
-            console.log('Token saved:', !!localStorage.getItem('adminToken'));
             
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('dashboardScreen').style.display = 'flex';
@@ -828,7 +814,6 @@ document.getElementById('projectForm').addEventListener('submit', async (e) => {
     
     const method = mode === 'create' ? 'POST' : 'PUT';
     
-    // Get token for auth
     const token = getToken();
     if (!token) {
         handleUnauthorized();
@@ -898,7 +883,6 @@ async function editProject(id) {
         if (response.ok) {
             const project = await response.json();
             
-            // Set mode to edit
             document.getElementById('formMode').value = 'edit';
             document.getElementById('projectSlug').value = id;
             editingId = id;
@@ -925,19 +909,17 @@ async function editProject(id) {
             document.getElementById('metaDescription').value = project.meta_description || '';
             document.getElementById('metaKeywords').value = project.meta_keywords || '';
             
-            // Navigation - Using IDs
+            // Navigation
             document.getElementById('prevProject').value = project.prev_project || '';
             document.getElementById('nextProject').value = project.next_project || '';
             
-            // Hero Image - using getImageUrl for proper URL
+            // Hero Image
             document.getElementById('heroImage').value = project.hero_image || '';
             
             if (project.hero_image) {
                 const preview = document.getElementById('heroImagePreview');
                 if (preview) {
-                    preview.innerHTML = `
-                        <img src="${getImageUrl(project.hero_image)}" alt="Hero">
-                    `;
+                    preview.innerHTML = `<img src="${getImageUrl(project.hero_image)}" alt="Hero">`;
                 }
             }
             
@@ -1016,12 +998,10 @@ async function editProject(id) {
                 });
             }
             
-            // Show create tab
             showTab('create');
             document.getElementById('formTitle').textContent = 'Edit Project';
             document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> Update Project';
             
-            // Scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
             
         } else {
@@ -1171,51 +1151,38 @@ document.addEventListener('keydown', (e) => {
 // INITIALIZE WITH DEMO ITEMS
 // ==================================================
 
-// Wait for DOM to be ready
 document.addEventListener('DOMContentLoaded', function() {
-    // Add initial demo items if containers exist
-    if (document.getElementById('featuresContainer')) {
-        if (document.getElementById('featuresContainer').children.length === 0) {
-            addFeature('fa-user-lock', 'User Authentication', 'Secure login and registration');
-            addFeature('fa-boxes', 'Product Catalog', 'Manage products with categories');
-            addFeature('fa-shopping-cart', 'Shopping Cart', 'Add, remove, and checkout');
-        }
+    // Add initial demo items if containers exist and are empty
+    if (document.getElementById('featuresContainer') && document.getElementById('featuresContainer').children.length === 0) {
+        addFeature('fa-user-lock', 'User Authentication', 'Secure login and registration');
+        addFeature('fa-boxes', 'Product Catalog', 'Manage products with categories');
+        addFeature('fa-shopping-cart', 'Shopping Cart', 'Add, remove, and checkout');
     }
     
-    if (document.getElementById('techStackContainer')) {
-        if (document.getElementById('techStackContainer').children.length === 0) {
-            addTechItem('React', 'fab fa-react', '#61dafb', 'Frontend');
-            addTechItem('Node.js', 'fab fa-node-js', '#339933', 'Backend');
-            addTechItem('MySQL', 'fas fa-database', '#00758f', 'Database');
-        }
+    if (document.getElementById('techStackContainer') && document.getElementById('techStackContainer').children.length === 0) {
+        addTechItem('React', 'fab fa-react', '#61dafb', 'Frontend');
+        addTechItem('Node.js', 'fab fa-node-js', '#339933', 'Backend');
+        addTechItem('MySQL', 'fas fa-database', '#00758f', 'Database');
     }
     
-    if (document.getElementById('timelineContainer')) {
-        if (document.getElementById('timelineContainer').children.length === 0) {
-            addTimelineItem('1', 'Planning', 'Defined requirements and architecture');
-            addTimelineItem('2', 'Development', 'Built the full-stack application');
-        }
+    if (document.getElementById('timelineContainer') && document.getElementById('timelineContainer').children.length === 0) {
+        addTimelineItem('1', 'Planning', 'Defined requirements and architecture');
+        addTimelineItem('2', 'Development', 'Built the full-stack application');
     }
     
-    if (document.getElementById('challengesContainer')) {
-        if (document.getElementById('challengesContainer').children.length === 0) {
-            addChallenge('fa-lock', 'Authentication', 'Implementing secure JWT authentication', 'Used bcrypt for password hashing and JWT for tokens');
-        }
+    if (document.getElementById('challengesContainer') && document.getElementById('challengesContainer').children.length === 0) {
+        addChallenge('fa-lock', 'Authentication', 'Implementing secure JWT authentication', 'Used bcrypt for password hashing and JWT for tokens');
     }
     
-    if (document.getElementById('learningsContainer')) {
-        if (document.getElementById('learningsContainer').children.length === 0) {
-            addLearning('MERN stack architecture and best practices');
-            addLearning('JWT authentication and security patterns');
-        }
+    if (document.getElementById('learningsContainer') && document.getElementById('learningsContainer').children.length === 0) {
+        addLearning('MERN stack architecture and best practices');
+        addLearning('JWT authentication and security patterns');
     }
     
-    if (document.getElementById('statisticsContainer')) {
-        if (document.getElementById('statisticsContainer').children.length === 0) {
-            addStatistic('Lines of Code', '8,500+', 'fa-code');
-            addStatistic('Pages', '12', 'fa-file');
-            addStatistic('Features', '18', 'fa-star');
-        }
+    if (document.getElementById('statisticsContainer') && document.getElementById('statisticsContainer').children.length === 0) {
+        addStatistic('Lines of Code', '8,500+', 'fa-code');
+        addStatistic('Pages', '12', 'fa-file');
+        addStatistic('Features', '18', 'fa-star');
     }
 });
 

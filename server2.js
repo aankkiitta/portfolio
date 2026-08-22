@@ -1,6 +1,8 @@
 // ==================================================
-// SERVER.JS - MAIN BACKEND FILE (ID-BASED ROUTING)
+// SERVER.JS - PRODUCTION READY
 // ==================================================
+
+require('dotenv').config();
 
 const express = require('express');
 const mysql = require('mysql2/promise');
@@ -10,41 +12,81 @@ const multer = require('multer');
 const path = require('path');
 const cors = require('cors');
 const fs = require('fs');
-
-//
+const helmet = require('helmet');
 
 const cloudinary = require("./cloudinary");
-
-
-
 
 // ==================================================
 // CONFIGURATION
 // ==================================================
 const app = express();
 const PORT = process.env.PORT || 5000;
-const JWT_SECRET = 'your-super-secret-jwt-key-change-this';
+const NODE_ENV = process.env.NODE_ENV || 'development';
+
+// Validate required environment variables
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+    console.error('❌ FATAL ERROR: JWT_SECRET is not defined in environment variables.');
+    process.exit(1);
+}
+
+const requiredEnvVars = ['DB_HOST', 'DB_USER', 'DB_NAME'];
+for (const envVar of requiredEnvVars) {
+    if (!process.env[envVar]) {
+        console.error(`❌ FATAL ERROR: ${envVar} is not defined in environment variables.`);
+        process.exit(1);
+    }
+}
+
 const UPLOAD_DIR = 'uploads';
 
 // Create upload directory if it doesn't exist
 if (!fs.existsSync(UPLOAD_DIR)) {
-    fs.mkdirSync(UPLOAD_DIR);
+    fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
 
 // ==================================================
 // MIDDLEWARE
 // ==================================================
+
+// Security middleware
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
+
+// CORS Configuration
+const allowedOrigins = [
+    'http://127.0.0.1:5500',
+    'http://localhost:5500',
+    'http://localhost:3000',
+    'http://localhost:5000'
+];
+
+// Add production frontend URL from environment
+if (process.env.FRONTEND_URL) {
+    allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
 app.use(cors({
-    origin: [
-        'http://127.0.0.1:5500',
-        'http://localhost:5500',
-        'http://localhost:3000'
-    ],
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.indexOf(origin) !== -1 || NODE_ENV === 'development') {
+            callback(null, true);
+        } else {
+            console.warn(`❌ CORS blocked: ${origin}`);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/uploads', express.static(UPLOAD_DIR));
+
+// Serve static files with absolute path
+app.use('/uploads', express.static(path.join(__dirname, UPLOAD_DIR)));
 
 // ==================================================
 // MULTER CONFIGURATION
@@ -78,7 +120,7 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+    limits: { fileSize: 10 * 1024 * 1024 },
     fileFilter: fileFilter
 });
 
@@ -86,14 +128,27 @@ const upload = multer({
 // DATABASE CONNECTION
 // ==================================================
 const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'root',
-    password: '12345',
-    database: 'portfolio_db',
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME,
+    port: Number(process.env.DB_PORT || 3306),
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
 });
+
+// Test database connection
+pool.getConnection()
+    .then(connection => {
+        console.log('✅ Database connected successfully');
+        connection.release();
+    })
+    .catch(err => {
+        console.error('❌ Database connection failed:', err.message);
+        console.error('Please check your database credentials in .env');
+        process.exit(1);
+    });
 
 // ==================================================
 // AUTHENTICATION MIDDLEWARE
@@ -121,15 +176,25 @@ const authenticateToken = async (req, res, next) => {
 };
 
 // ==================================================
+// HEALTH CHECK ROUTE
+// ==================================================
+app.get('/api/health', (req, res) => {
+    res.json({
+        success: true,
+        message: 'API is running',
+        environment: NODE_ENV,
+        timestamp: new Date().toISOString()
+    });
+});
+
+// ==================================================
 // API ROUTES
 // ==================================================
+
+// --- LOGIN ---
 app.post('/api/login', async (req, res) => {
     try {
         const { username, password } = req.body;
-
-        console.log("=================================");
-        console.log("Entered Username :", username);
-        console.log("Entered Password :", password);
 
         if (!username || !password) {
             return res.status(400).json({
@@ -142,8 +207,6 @@ app.post('/api/login', async (req, res) => {
             [username]
         );
 
-        console.log("Users Found :", users.length);
-
         if (users.length === 0) {
             return res.status(401).json({
                 error: 'Invalid username.'
@@ -152,21 +215,12 @@ app.post('/api/login', async (req, res) => {
 
         const user = users[0];
 
-        console.log("Database Username :", user.username);
-        console.log("Database Password :", "[" + user.password_hash + "]");
-
-        // Plain text password check
+        // Plain text password check (preserving existing logic)
         if (password.trim() !== user.password_hash.trim()) {
-            console.log("❌ PASSWORD NOT MATCHED");
-            console.log("Entered :", "[" + password.trim() + "]");
-            console.log("Database:", "[" + user.password_hash.trim() + "]");
-
             return res.status(401).json({
                 error: 'Invalid password.'
             });
         }
-
-        console.log("✅ PASSWORD MATCHED");
 
         const token = jwt.sign(
             {
@@ -194,7 +248,8 @@ app.post('/api/login', async (req, res) => {
         });
     }
 });
-// --- PROJECTS CRUD (ID-BASED) ---
+
+// --- PROJECTS CRUD ---
 
 // Get all projects
 app.get('/api/projects', async (req, res) => {
@@ -258,7 +313,6 @@ app.get('/api/projects/:id', async (req, res) => {
             [project.id]
         );
 
-        // Get previous and next projects
         let prevProject = null;
         let nextProject = null;
 
@@ -318,9 +372,8 @@ app.get('/api/projects/:id', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch project.' });
     }
 });
-// ==================================================
-// CREATE PROJECT - FIXED
-// ==================================================
+
+// CREATE PROJECT
 app.post('/api/projects', authenticateToken, upload.fields([
     { name: 'hero_image', maxCount: 1 },
     { name: 'banner_image', maxCount: 1 }
@@ -330,7 +383,6 @@ app.post('/api/projects', authenticateToken, upload.fields([
     try {
         await connection.beginTransaction();
         
-        // Parse JSON data from FormData
         const galleryData = req.body.gallery ? JSON.parse(req.body.gallery) : [];
         const featuresData = req.body.features ? JSON.parse(req.body.features) : [];
         const techStackData = req.body.techStack ? JSON.parse(req.body.techStack) : [];
@@ -338,15 +390,6 @@ app.post('/api/projects', authenticateToken, upload.fields([
         const challengesData = req.body.challenges ? JSON.parse(req.body.challenges) : [];
         const learningsData = req.body.learnings ? JSON.parse(req.body.learnings) : [];
         const statisticsData = req.body.statistics ? JSON.parse(req.body.statistics) : [];
-
-        console.log("📝 CREATE PROJECT - Received Data:");
-        console.log("Gallery items:", galleryData.length);
-        console.log("Features items:", featuresData.length);
-        console.log("Tech Stack items:", techStackData.length);
-        console.log("Timeline items:", timelineData.length);
-        console.log("Challenges items:", challengesData.length);
-        console.log("Learnings items:", learningsData.length);
-        console.log("Statistics items:", statisticsData.length);
 
         const {
             project_name, project_slug, category, status, completion_date,
@@ -364,7 +407,7 @@ app.post('/api/projects', authenticateToken, upload.fields([
             return res.status(400).json({ error: 'Project slug already exists. Please use a unique slug.' });
         }
         
-  const heroImage = req.body.hero_image || null;
+        const heroImage = req.body.hero_image || null;
         const bannerImage = req.files?.banner_image ? `/uploads/hero/${req.files.banner_image[0].filename}` : null;
         
         const [result] = await connection.query(
@@ -384,11 +427,9 @@ app.post('/api/projects', authenticateToken, upload.fields([
         );
         
         const projectId = result.insertId;
-        console.log(`✅ Project created with ID: ${projectId}`);
         
-        // Insert gallery
+        // Insert related data...
         if (galleryData && galleryData.length > 0) {
-            console.log(`📸 Inserting ${galleryData.length} gallery items...`);
             for (const item of galleryData) {
                 if (item.image_path) {
                     await connection.query(
@@ -399,9 +440,7 @@ app.post('/api/projects', authenticateToken, upload.fields([
             }
         }
         
-        // Insert features
         if (featuresData && featuresData.length > 0) {
-            console.log(`⭐ Inserting ${featuresData.length} features...`);
             for (const item of featuresData) {
                 if (item.icon && item.title) {
                     await connection.query(
@@ -412,9 +451,7 @@ app.post('/api/projects', authenticateToken, upload.fields([
             }
         }
         
-        // Insert tech stack - FIXED: using techStackData instead of techStack
         if (techStackData && techStackData.length > 0) {
-            console.log(`💻 Inserting ${techStackData.length} tech stack items...`);
             for (const item of techStackData) {
                 if (item.tech_name && item.tech_icon) {
                     await connection.query(
@@ -425,9 +462,7 @@ app.post('/api/projects', authenticateToken, upload.fields([
             }
         }
         
-        // Insert timeline - FIXED: using timelineData instead of timeline
         if (timelineData && timelineData.length > 0) {
-            console.log(`⏱️ Inserting ${timelineData.length} timeline items...`);
             for (const item of timelineData) {
                 if (item.step_title) {
                     await connection.query(
@@ -438,9 +473,7 @@ app.post('/api/projects', authenticateToken, upload.fields([
             }
         }
         
-        // Insert challenges - FIXED: using challengesData instead of challenges
         if (challengesData && challengesData.length > 0) {
-            console.log(`⚡ Inserting ${challengesData.length} challenges...`);
             for (const item of challengesData) {
                 if (item.icon && item.title) {
                     await connection.query(
@@ -451,9 +484,7 @@ app.post('/api/projects', authenticateToken, upload.fields([
             }
         }
         
-        // Insert learnings - FIXED: using learningsData instead of learnings
         if (learningsData && learningsData.length > 0) {
-            console.log(`🎓 Inserting ${learningsData.length} learnings...`);
             for (const item of learningsData) {
                 if (item.learning_text) {
                     await connection.query(
@@ -464,9 +495,7 @@ app.post('/api/projects', authenticateToken, upload.fields([
             }
         }
         
-        // Insert statistics - FIXED: using statisticsData instead of statistics
         if (statisticsData && statisticsData.length > 0) {
-            console.log(`📊 Inserting ${statisticsData.length} statistics...`);
             for (const item of statisticsData) {
                 if (item.stat_title && item.stat_value) {
                     await connection.query(
@@ -478,7 +507,6 @@ app.post('/api/projects', authenticateToken, upload.fields([
         }
         
         await connection.commit();
-        console.log(`✅ Project ${projectId} created successfully with all related data!`);
         
         res.status(201).json({
             message: 'Project created successfully!',
@@ -488,19 +516,20 @@ app.post('/api/projects', authenticateToken, upload.fields([
     } catch (error) {
         await connection.rollback();
         console.error('❌ Error creating project:', error);
-        console.error('❌ Error stack:', error.stack);
-        res.status(500).json({ 
-            error: 'Failed to create project: ' + error.message,
-            details: error.stack 
-        });
+        
+        if (NODE_ENV === 'production') {
+            res.status(500).json({ error: 'Failed to create project. Please try again later.' });
+        } else {
+            res.status(500).json({ 
+                error: 'Failed to create project: ' + error.message
+            });
+        }
     } finally {
         connection.release();
     }
 });
 
-// ==================================================
-// UPDATE PROJECT - FIXED
-// ==================================================
+// UPDATE PROJECT
 app.put('/api/projects/:id', authenticateToken, upload.fields([
     { name: 'hero_image', maxCount: 1 },
     { name: 'banner_image', maxCount: 1 }
@@ -512,7 +541,6 @@ app.put('/api/projects/:id', authenticateToken, upload.fields([
         
         const { id } = req.params;
         
-        // Parse JSON data from FormData - FIXED: added this section
         const galleryData = req.body.gallery ? JSON.parse(req.body.gallery) : [];
         const featuresData = req.body.features ? JSON.parse(req.body.features) : [];
         const techStackData = req.body.techStack ? JSON.parse(req.body.techStack) : [];
@@ -520,15 +548,6 @@ app.put('/api/projects/:id', authenticateToken, upload.fields([
         const challengesData = req.body.challenges ? JSON.parse(req.body.challenges) : [];
         const learningsData = req.body.learnings ? JSON.parse(req.body.learnings) : [];
         const statisticsData = req.body.statistics ? JSON.parse(req.body.statistics) : [];
-
-        console.log(`📝 UPDATE PROJECT ID: ${id}`);
-        console.log("Gallery items:", galleryData.length);
-        console.log("Features items:", featuresData.length);
-        console.log("Tech Stack items:", techStackData.length);
-        console.log("Timeline items:", timelineData.length);
-        console.log("Challenges items:", challengesData.length);
-        console.log("Learnings items:", learningsData.length);
-        console.log("Statistics items:", statisticsData.length);
 
         const {
             project_name, category, status, completion_date,
@@ -544,8 +563,8 @@ app.put('/api/projects/:id', authenticateToken, upload.fields([
         
         const project = existing[0];
         
- const heroImage = req.body.hero_image || project.hero_image;
-const bannerImage = req.body.banner_image || project.banner_image;
+        const heroImage = req.body.hero_image || project.hero_image;
+        const bannerImage = req.body.banner_image || project.banner_image;
         
         await connection.query(
             `UPDATE projects SET
@@ -567,7 +586,6 @@ const bannerImage = req.body.banner_image || project.banner_image;
         );
         
         const projectId = parseInt(id);
-        console.log(`✅ Project ${projectId} updated, now updating related data...`);
         
         // Delete existing relationships
         await connection.query('DELETE FROM project_gallery WHERE project_id = ?', [projectId]);
@@ -578,11 +596,8 @@ const bannerImage = req.body.banner_image || project.banner_image;
         await connection.query('DELETE FROM project_learnings WHERE project_id = ?', [projectId]);
         await connection.query('DELETE FROM project_statistics WHERE project_id = ?', [projectId]);
         
-        console.log('🗑️ Deleted existing relationships');
-        
-        // Insert gallery
+        // Insert updated relationships...
         if (galleryData && galleryData.length > 0) {
-            console.log(`📸 Inserting ${galleryData.length} gallery items...`);
             for (const item of galleryData) {
                 if (item.image_path) {
                     await connection.query(
@@ -593,9 +608,7 @@ const bannerImage = req.body.banner_image || project.banner_image;
             }
         }
         
-        // Insert features
         if (featuresData && featuresData.length > 0) {
-            console.log(`⭐ Inserting ${featuresData.length} features...`);
             for (const item of featuresData) {
                 if (item.icon && item.title) {
                     await connection.query(
@@ -606,9 +619,7 @@ const bannerImage = req.body.banner_image || project.banner_image;
             }
         }
         
-        // Insert tech stack
         if (techStackData && techStackData.length > 0) {
-            console.log(`💻 Inserting ${techStackData.length} tech stack items...`);
             for (const item of techStackData) {
                 if (item.tech_name && item.tech_icon) {
                     await connection.query(
@@ -619,9 +630,7 @@ const bannerImage = req.body.banner_image || project.banner_image;
             }
         }
         
-        // Insert timeline
         if (timelineData && timelineData.length > 0) {
-            console.log(`⏱️ Inserting ${timelineData.length} timeline items...`);
             for (const item of timelineData) {
                 if (item.step_title) {
                     await connection.query(
@@ -632,9 +641,7 @@ const bannerImage = req.body.banner_image || project.banner_image;
             }
         }
         
-        // Insert challenges
         if (challengesData && challengesData.length > 0) {
-            console.log(`⚡ Inserting ${challengesData.length} challenges...`);
             for (const item of challengesData) {
                 if (item.icon && item.title) {
                     await connection.query(
@@ -645,9 +652,7 @@ const bannerImage = req.body.banner_image || project.banner_image;
             }
         }
         
-        // Insert learnings
         if (learningsData && learningsData.length > 0) {
-            console.log(`🎓 Inserting ${learningsData.length} learnings...`);
             for (const item of learningsData) {
                 if (item.learning_text) {
                     await connection.query(
@@ -658,9 +663,7 @@ const bannerImage = req.body.banner_image || project.banner_image;
             }
         }
         
-        // Insert statistics
         if (statisticsData && statisticsData.length > 0) {
-            console.log(`📊 Inserting ${statisticsData.length} statistics...`);
             for (const item of statisticsData) {
                 if (item.stat_title && item.stat_value) {
                     await connection.query(
@@ -672,7 +675,6 @@ const bannerImage = req.body.banner_image || project.banner_image;
         }
         
         await connection.commit();
-        console.log(`✅ Project ${projectId} updated successfully with all related data!`);
         
         res.json({
             message: 'Project updated successfully!',
@@ -682,11 +684,14 @@ const bannerImage = req.body.banner_image || project.banner_image;
     } catch (error) {
         await connection.rollback();
         console.error('❌ Error updating project:', error);
-        console.error('❌ Error stack:', error.stack);
-        res.status(500).json({ 
-            error: 'Failed to update project: ' + error.message,
-            details: error.stack 
-        });
+        
+        if (NODE_ENV === 'production') {
+            res.status(500).json({ error: 'Failed to update project. Please try again later.' });
+        } else {
+            res.status(500).json({ 
+                error: 'Failed to update project: ' + error.message
+            });
+        }
     } finally {
         connection.release();
     }
@@ -772,8 +777,6 @@ app.delete('/api/delete-gallery-image', authenticateToken, async (req, res) => {
     }
 });
 
-
-
 // ==================================================
 // REVIEWS API ROUTES
 // ==================================================
@@ -803,46 +806,48 @@ const reviewUpload = multer({
 });
 
 app.post("/api/reviews", reviewUpload.single("photo"), async (req, res) => {
+    try {
+        const { name, email, review, rating } = req.body;
 
-    const { name, email, review, rating } = req.body;
+        let image_url = null;
 
-    let image_url = null;
+        if (req.file) {
+            const uploaded = await new Promise((resolve, reject) => {
+                const stream = cloudinary.uploader.upload_stream(
+                    {
+                        folder: "portfolio/reviews"
+                    },
+                    (err, result) => {
+                        if (err) return reject(err);
+                        resolve(result);
+                    }
+                );
+                stream.end(req.file.buffer);
+            });
+            image_url = uploaded.secure_url;
+        }
 
-    if (req.file) {
+        await pool.query(
+            "INSERT INTO reviews(name, email, review, rating, image_url) VALUES (?, ?, ?, ?, ?)",
+            [name, email, review, rating, image_url]
+        );
 
-        const uploaded = await new Promise((resolve, reject) => {
-
-            const stream = cloudinary.uploader.upload_stream(
-                {
-                    folder: "portfolio/reviews"
-                },
-                (err, result) => {
-                    if (err) return reject(err);
-                    resolve(result);
-                }
-            );
-
-            stream.end(req.file.buffer);
-
+        res.json({
+            success: true,
+            message: "Review added successfully"
         });
-
-        image_url = uploaded.secure_url;
+    } catch (err) {
+        console.error("Error adding review:", err);
+        res.status(500).json({
+            success: false,
+            error: "Failed to add review"
+        });
     }
-
-    await pool.query(
-        "INSERT INTO reviews(name,email,review,rating,image_url) VALUES (?,?,?,?,?)",
-        [name, email, review, rating, image_url]
-    );
-
-    res.json({
-        success: true
-    });
-
 });
+
 // DELETE review by ID
 app.delete("/api/reviews/:id", async (req, res) => {
     try {
-        // Get image path first to delete file
         const [review] = await pool.query(
             "SELECT image_url FROM reviews WHERE id = ?",
             [req.params.id]
@@ -874,23 +879,13 @@ app.delete("/api/reviews/:id", async (req, res) => {
     }
 });
 
-
-
-
-
-
-
-
-
-
 // ==================================================
-// CONTACT API ROUTE - FIXED
+// CONTACT API ROUTE
 // ==================================================
 app.post("/api/contact", async (req, res) => {
     try {
         const { name, email, subject, message } = req.body;
 
-        // Validation
         if (!name || !email || !subject || !message) {
             return res.status(400).json({
                 success: false,
@@ -898,7 +893,6 @@ app.post("/api/contact", async (req, res) => {
             });
         }
 
-        // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             return res.status(400).json({
@@ -907,7 +901,6 @@ app.post("/api/contact", async (req, res) => {
             });
         }
 
-        // Insert into database using pool (not db)
         const sql = `
             INSERT INTO contact_messages (name, email, subject, message, created_at)
             VALUES (?, ?, ?, ?, NOW())
@@ -930,10 +923,42 @@ app.post("/api/contact", async (req, res) => {
         });
     }
 });
+
+// ==================================================
+// ERROR HANDLING MIDDLEWARE
+// ==================================================
+app.use((err, req, res, next) => {
+    console.error('❌ Unhandled error:', err);
+    
+    if (NODE_ENV === 'production') {
+        res.status(500).json({
+            success: false,
+            message: 'Internal server error'
+        });
+    } else {
+        res.status(500).json({
+            success: false,
+            message: err.message,
+            stack: err.stack
+        });
+    }
+});
+
+// ==================================================
+// 404 Handler
+// ==================================================
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        message: 'Route not found'
+    });
+});
+
 // ==================================================
 // SERVER STARTUP
 // ==================================================
-app.listen(PORT, () => {
-    console.log(`🚀 Admin Panel API running on http://localhost:${PORT}`);
-    console.log(`📁 Upload directory: ${UPLOAD_DIR}`);
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`📁 Environment: ${NODE_ENV}`);
+    console.log(`✅ Health check available at: /api/health`);
 });

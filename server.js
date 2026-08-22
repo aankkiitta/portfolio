@@ -254,7 +254,16 @@ app.post('/api/login', async (req, res) => {
 // Get all projects
 app.get('/api/projects', async (req, res) => {
     try {
-        const [projects] = await pool.query('SELECT * FROM projects ORDER BY created_at DESC');
+        const [projects] = await pool.query(`
+            SELECT 
+                id, project_name, project_slug, category, status, 
+                completion_date, role, tagline, github_url, demo_url,
+                hero_image, banner_image, overview, problem_statement,
+                solution, meta_title, meta_description, meta_keywords,
+                prev_project, next_project, created_at, updated_at
+            FROM projects 
+            ORDER BY created_at DESC
+        `);
         res.json(projects);
     } catch (error) {
         console.error('Error fetching projects:', error);
@@ -339,6 +348,7 @@ app.get('/api/projects/:id', async (req, res) => {
         res.json({
             id: project.id,
             project_name: project.project_name,
+            project_slug: project.project_slug,
             category: project.category,
             status: project.status,
             completion_date: project.completion_date,
@@ -550,7 +560,7 @@ app.put('/api/projects/:id', authenticateToken, upload.fields([
         const statisticsData = req.body.statistics ? JSON.parse(req.body.statistics) : [];
 
         const {
-            project_name, category, status, completion_date,
+            project_name, project_slug, category, status, completion_date,
             role, tagline, github_url, demo_url, overview, problem_statement,
             solution, meta_title, meta_description, meta_keywords,
             prev_project, next_project
@@ -563,12 +573,23 @@ app.put('/api/projects/:id', authenticateToken, upload.fields([
         
         const project = existing[0];
         
+        // Check if slug exists for other projects
+        if (project_slug) {
+            const [slugCheck] = await connection.query(
+                'SELECT id FROM projects WHERE project_slug = ? AND id != ?',
+                [project_slug, id]
+            );
+            if (slugCheck.length > 0) {
+                return res.status(400).json({ error: 'Project slug already exists. Please use a unique slug.' });
+            }
+        }
+        
         const heroImage = req.body.hero_image || project.hero_image;
-        const bannerImage = req.body.banner_image || project.banner_image;
+        const bannerImage = req.files?.banner_image ? `/uploads/hero/${req.files.banner_image[0].filename}` : (req.body.banner_image || project.banner_image);
         
         await connection.query(
             `UPDATE projects SET
-                project_name = ?, category = ?, status = ?, completion_date = ?,
+                project_name = ?, project_slug = ?, category = ?, status = ?, completion_date = ?,
                 role = ?, tagline = ?, github_url = ?, demo_url = ?,
                 hero_image = ?, banner_image = ?,
                 overview = ?, problem_statement = ?, solution = ?,
@@ -576,7 +597,7 @@ app.put('/api/projects/:id', authenticateToken, upload.fields([
                 prev_project = ?, next_project = ?
             WHERE id = ?`,
             [
-                project_name, category, status, completion_date || null,
+                project_name, project_slug || project.project_slug, category, status, completion_date || null,
                 role || null, tagline || null, github_url || null, demo_url || null,
                 heroImage, bannerImage, overview || null, problem_statement || null,
                 solution || null, meta_title || null, meta_description || null,
