@@ -297,11 +297,29 @@ app.post('/api/login', async (req, res) => {
 });
 
 // ==================================================
-// PROJECTS CRUD (UNCHANGED - ALL FUNCTIONALITY PRESERVED)
+// GET ALL PROJECTS
 // ==================================================
+app.get('/api/projects', async (req, res) => {
+    try {
+        const [projects] = await pool.query(`
+            SELECT 
+                id, project_name, project_slug, category, status, 
+                completion_date, role, tagline, github_url, demo_url,
+                hero_image, banner_image, overview, problem_statement,
+                solution, meta_title, meta_description, meta_keywords,
+                prev_project, next_project, created_at, updated_at
+            FROM projects 
+            ORDER BY created_at DESC
+        `);
+        res.json(projects);
+    } catch (error) {
+        console.error('Error fetching projects:', error);
+        res.status(500).json({ error: 'Failed to fetch projects.' });
+    }
+});
 
 // ==================================================
-// GET PROJECT BY ID
+// GET PROJECT BY ID - IMPORTANT: This must be BEFORE /api/projects/:id
 // ==================================================
 app.get('/api/projects/:id', async (req, res) => {
     try {
@@ -315,6 +333,8 @@ app.get('/api/projects/:id', async (req, res) => {
                 error: 'Invalid project ID.'
             });
         }
+
+        console.log('🔎 Fetching project with ID:', projectId);
 
         // Query database
         const [projects] = await pool.query(
@@ -414,7 +434,10 @@ app.get('/api/projects/:id', async (req, res) => {
         });
     }
 });
+
+// ==================================================
 // CREATE PROJECT
+// ==================================================
 app.post('/api/projects', authenticateToken, upload.fields([
     { name: 'hero_image', maxCount: 1 },
     { name: 'banner_image', maxCount: 1 }
@@ -570,7 +593,9 @@ app.post('/api/projects', authenticateToken, upload.fields([
     }
 });
 
+// ==================================================
 // UPDATE PROJECT
+// ==================================================
 app.put('/api/projects/:id', authenticateToken, upload.fields([
     { name: 'hero_image', maxCount: 1 },
     { name: 'banner_image', maxCount: 1 }
@@ -749,7 +774,9 @@ app.put('/api/projects/:id', authenticateToken, upload.fields([
     }
 });
 
-// Delete project by ID
+// ==================================================
+// DELETE PROJECT
+// ==================================================
 app.delete('/api/projects/:id', authenticateToken, async (req, res) => {
     try {
         const { id } = req.params;
@@ -785,7 +812,9 @@ app.delete('/api/projects/:id', authenticateToken, async (req, res) => {
     }
 });
 
-// Upload gallery images
+// ==================================================
+// UPLOAD GALLERY IMAGES
+// ==================================================
 app.post('/api/upload-gallery', authenticateToken, upload.array('gallery_images', 20), async (req, res) => {
     try {
         const files = req.files;
@@ -809,7 +838,9 @@ app.post('/api/upload-gallery', authenticateToken, upload.array('gallery_images'
     }
 });
 
-// Delete gallery image
+// ==================================================
+// DELETE GALLERY IMAGE
+// ==================================================
 app.delete('/api/delete-gallery-image', authenticateToken, async (req, res) => {
     try {
         const { image_path } = req.body;
