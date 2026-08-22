@@ -1138,7 +1138,7 @@ async function loadReviews() {
         }
         
         const response = await fetch(`${API_URL}/reviews`, {
-            headers: getAuthHeaders()
+            headers: getAuthHeaders()  // <-- Add this!
         });
         
         if (response.status === 401 || response.status === 403) {
@@ -1188,7 +1188,6 @@ async function loadReviews() {
         showToast('Cannot connect to the live server.', 'error');
     }
 }
-
 async function deleteReview(id) {
     showConfirm(`Are you sure you want to delete this review?`, async () => {
         try {
@@ -1232,7 +1231,7 @@ async function loadContactMessages() {
         }
         
         const response = await fetch(`${API_URL}/contact-messages`, {
-            headers: getAuthHeaders()
+            headers: getAuthHeaders()  // <-- Add this!
         });
         
         if (response.status === 401 || response.status === 403) {
@@ -1274,7 +1273,6 @@ async function loadContactMessages() {
         showToast('Cannot connect to the live server.', 'error');
     }
 }
-
 async function deleteContactMessage(id) {
     showConfirm(`Are you sure you want to delete this message?`, async () => {
         try {
