@@ -1,5 +1,5 @@
 /* ==================================================
-   ADMIN PANEL STYLES
+   ADMIN PANEL STYLES - FULLY RESPONSIVE
 ================================================== */
 :root {
     --primary: #6C4DFF;
@@ -48,6 +48,7 @@ body {
     justify-content: center;
     background: var(--bg-primary);
     z-index: 99999;
+    padding: 20px;
 }
 
 .login-card {
@@ -113,7 +114,7 @@ body {
     border-right: 1px solid var(--border-color);
     overflow-y: auto;
     z-index: 100;
-    transition: var(--transition);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .sidebar-header {
@@ -185,6 +186,31 @@ body {
     color: #ef4444;
 }
 
+/* Hamburger Menu Button */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    padding: 4px;
+    z-index: 101;
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+    z-index: 99;
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
 /* ==================================================
    MAIN CONTENT
 ================================================== */
@@ -206,6 +232,12 @@ body {
     position: sticky;
     top: 0;
     z-index: 50;
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
 }
 
 .topbar h2 {
@@ -287,11 +319,13 @@ body {
     border: 1px solid var(--border-color);
     overflow: hidden;
     box-shadow: var(--shadow-sm);
+    overflow-x: auto;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 600px;
 }
 
 thead {
@@ -306,12 +340,14 @@ th {
     letter-spacing: 0.05em;
     color: var(--text-muted);
     font-weight: 600;
+    white-space: nowrap;
 }
 
 td {
     padding: 14px 20px;
     border-top: 1px solid var(--border-color);
     font-size: 0.9rem;
+    vertical-align: middle;
 }
 
 .status-badge {
@@ -339,9 +375,49 @@ td {
     color: #fbbf24;
 }
 
+/* ==================================================
+   REVIEWS & CONTACT TABLES
+================================================== */
+.review-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.review-name {
+    font-weight: 600;
+}
+
+.review-rating {
+    color: #fbbf24;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.review-text,
+.contact-message {
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.reviewer-cell,
+.contact-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ==================================================
+   ACTION BUTTONS
+================================================== */
 .action-buttons {
     display: flex;
     gap: 8px;
+    flex-wrap: wrap;
 }
 
 .action-btn {
@@ -352,6 +428,7 @@ td {
     font-size: 0.75rem;
     font-weight: 500;
     transition: var(--transition);
+    white-space: nowrap;
 }
 
 .action-btn.edit {
@@ -374,14 +451,26 @@ td {
     color: #fff;
 }
 
+.action-btn.view {
+    background: rgba(59, 130, 246, 0.08);
+    color: #3b82f6;
+}
+
+.action-btn.view:hover {
+    background: #3b82f6;
+    color: #fff;
+}
+
 /* ==================================================
-   FORMS
+   PROJECTS HEADER
 ================================================== */
 .projects-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
 .projects-header h3 {
@@ -389,6 +478,14 @@ td {
     font-weight: 700;
 }
 
+.projects-header .count-badge {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* ==================================================
+   FORMS
+================================================== */
 .create-header h3 {
     font-size: 1.2rem;
     font-weight: 700;
@@ -598,6 +695,7 @@ small {
     margin-top: 24px;
     padding-top: 24px;
     border-top: 1px solid var(--border-color);
+    flex-wrap: wrap;
 }
 
 /* ==================================================
@@ -617,6 +715,8 @@ small {
     align-items: center;
     justify-content: space-between;
     margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .dynamic-item .item-header .item-title {
@@ -753,13 +853,26 @@ small {
 /* ==================================================
    RESPONSIVE
 ================================================== */
+
+/* Tablet */
 @media (max-width: 1024px) {
     .form-row {
         grid-template-columns: 1fr;
     }
+    
+    .dashboard-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
+/* Mobile */
 @media (max-width: 768px) {
+    .menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
     .sidebar {
         transform: translateX(-100%);
         width: 280px;
@@ -775,6 +888,11 @@ small {
 
     .topbar {
         padding: 0 16px;
+        height: 60px;
+    }
+    
+    .topbar h2 {
+        font-size: 1rem;
     }
 
     .content-section {
@@ -783,6 +901,21 @@ small {
 
     .dashboard-stats {
         grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+    
+    .stat-card {
+        padding: 16px;
+    }
+    
+    .stat-number {
+        font-size: 1.4rem;
+    }
+    
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
     }
 
     .login-card {
@@ -795,6 +928,11 @@ small {
         gap: 12px;
         align-items: stretch;
     }
+    
+    .projects-header .btn-primary {
+        width: 100%;
+        justify-content: center;
+    }
 
     .form-actions {
         flex-direction: column;
@@ -805,62 +943,247 @@ small {
         width: 100%;
         justify-content: center;
     }
+    
+    /* Table styles for mobile */
+    .table-wrapper {
+        border-radius: 12px;
+    }
+    
+    table {
+        min-width: 500px;
+    }
+    
+    th, td {
+        padding: 10px 14px;
+        font-size: 0.8rem;
+    }
+    
+    th {
+        font-size: 0.65rem;
+    }
+    
+    .action-btn {
+        padding: 4px 10px;
+        font-size: 0.65rem;
+    }
+    
+    .review-text,
+    .contact-message {
+        max-width: 120px;
+    }
 }
 
+/* Small Mobile */
 @media (max-width: 480px) {
-    .dashboard-stats {
-        grid-template-columns: 1fr;
-    }
-
-    .table-wrapper {
-        overflow-x: auto;
-    }
-
-    table {
-        min-width: 600px;
-    }
-
     .login-card {
         padding: 24px 16px;
+        margin: 12px;
+    }
+    
+    .login-logo {
+        font-size: 1.1rem;
+    }
+    
+    .login-logo .logo-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 0.8rem;
+    }
+    
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .stat-card {
+        padding: 14px;
+    }
+    
+    .stat-number {
+        font-size: 1.2rem;
+    }
+    
+    .stat-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
     }
 
     .section-body {
-        padding: 16px;
-    }
-
-    .dynamic-item {
         padding: 12px;
     }
-}
-
-
-/* ==================================================
-   REVIEWS & CONTACT TABLES
-================================================== */
-#reviewsContent .table-wrapper td,
-#contactContent .table-wrapper td {
-    vertical-align: middle;
-}
-
-#reviewsContent .table-wrapper td:first-child {
-    min-width: 120px;
-}
-
-#contactContent .table-wrapper td:nth-child(4) {
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-@media (max-width: 768px) {
-    #reviewsContent .table-wrapper,
-    #contactContent .table-wrapper {
-        overflow-x: auto;
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 8px 12px;
+        font-size: 0.85rem;
     }
     
-    #reviewsContent table,
-    #contactContent table {
-        min-width: 600px;
+    .dynamic-item {
+        padding: 10px;
+    }
+    
+    .dynamic-item .item-header .item-title {
+        font-size: 0.8rem;
+    }
+    
+    .modal-box {
+        padding: 20px;
+        margin: 12px;
+    }
+    
+    .modal-box h3 {
+        font-size: 1rem;
+    }
+    
+    table {
+        min-width: 400px;
+    }
+    
+    th, td {
+        padding: 8px 10px;
+        font-size: 0.7rem;
+    }
+    
+    .action-btn {
+        padding: 3px 8px;
+        font-size: 0.6rem;
+    }
+    
+    .review-text,
+    .contact-message {
+        max-width: 80px;
+    }
+    
+    .review-avatar {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .review-rating {
+        font-size: 0.7rem;
+    }
+    
+    .toast {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        padding: 12px 16px;
+        font-size: 0.85rem;
+        max-width: none;
+    }
+    
+    .sidebar-nav a {
+        padding: 10px 14px;
+        font-size: 0.85rem;
+        gap: 12px;
+    }
+    
+    .sidebar-nav a i {
+        font-size: 1rem;
+    }
+    
+    .sidebar-header {
+        padding: 16px 16px;
+    }
+    
+    .sidebar-logo {
+        font-size: 1rem;
+    }
+    
+    .sidebar-logo .logo-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 0.7rem;
+    }
+}
+
+/* Very Small Mobile */
+@media (max-width: 360px) {
+    .topbar h2 {
+        font-size: 0.85rem;
+    }
+    
+    .admin-name {
+        font-size: 0.8rem;
+    }
+    
+    .stat-card {
+        padding: 10px;
+        gap: 10px;
+    }
+    
+    .stat-number {
+        font-size: 1rem;
+    }
+    
+    .stat-label {
+        font-size: 0.65rem;
+    }
+    
+    .stat-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 0.85rem;
+    }
+    
+    table {
+        min-width: 320px;
+    }
+    
+    th, td {
+        padding: 6px 8px;
+        font-size: 0.65rem;
+    }
+    
+    .action-btn {
+        padding: 2px 6px;
+        font-size: 0.55rem;
+        border-radius: 4px;
+    }
+    
+    .review-text,
+    .contact-message {
+        max-width: 60px;
+    }
+    
+    .login-card {
+        padding: 20px 12px;
+    }
+    
+    .login-logo {
+        font-size: 1rem;
+    }
+    
+    .login-logo .logo-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 0.7rem;
+    }
+    
+    .login-header p {
+        font-size: 0.8rem;
+    }
+}
+
+/* ==================================================
+   SIDEBAR OVERLAY - Mobile Only
+================================================== */
+@media (max-width: 768px) {
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(4px);
+        z-index: 99;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .sidebar-overlay.active {
+        display: block;
+        opacity: 1;
     }
 }
