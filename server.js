@@ -1,12 +1,11 @@
 // ==================================================
-// SERVER.JS - PRODUCTION READY
+// SERVER.JS - PRODUCTION READY (UPDATED)
 // ==================================================
 
 require('dotenv').config();
 
 const express = require('express');
 const mysql = require('mysql2/promise');
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const path = require('path');
@@ -28,6 +27,12 @@ const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
     console.error('❌ FATAL ERROR: JWT_SECRET is not defined in environment variables.');
     process.exit(1);
+}
+
+// Validate admin credentials are set
+if (!process.env.ADMIN_USERNAME || !process.env.ADMIN_PASSWORD) {
+    console.warn('⚠️ ADMIN_USERNAME or ADMIN_PASSWORD is not set in environment variables.');
+    console.warn('⚠️ Admin login will not work until these are configured.');
 }
 
 const requiredEnvVars = ['DB_HOST', 'DB_USER', 'DB_NAME'];
@@ -59,7 +64,8 @@ const allowedOrigins = [
     'http://127.0.0.1:5500',
     'http://localhost:5500',
     'http://localhost:3000',
-    'http://localhost:5000'
+    'http://localhost:5000',
+    'https://portfolio-3-l63x.onrender.com'
 ];
 
 // Add production frontend URL from environment
@@ -151,27 +157,44 @@ pool.getConnection()
     });
 
 // ==================================================
-// AUTHENTICATION MIDDLEWARE
+// AUTHENTICATION MIDDLEWARE - UPDATED (NO DATABASE)
 // ==================================================
-const authenticateToken = async (req, res, next) => {
-    const token = req.headers['authorization']?.split(' ')[1];
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
     
-    if (!token) {
-        return res.status(401).json({ error: 'Access denied. No token provided.' });
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({
+            error: 'Access denied. No token provided.'
+        });
     }
-    
+
+    const token = authHeader.split(' ')[1];
+
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
-        const [users] = await pool.query('SELECT id, username, email FROM admin_users WHERE id = ?', [decoded.userId]);
-        
-        if (users.length === 0) {
-            return res.status(401).json({ error: 'Invalid token.' });
+
+        if (decoded.role !== 'admin') {
+            return res.status(403).json({
+                error: 'Admin access required.'
+            });
         }
-        
-        req.user = users[0];
+
+        req.user = {
+            username: decoded.username,
+            role: decoded.role
+        };
+
         next();
+
     } catch (error) {
-        return res.status(403).json({ error: 'Invalid or expired token.' });
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({
+                error: 'Token expired. Please login again.'
+            });
+        }
+        return res.status(403).json({
+            error: 'Invalid or expired token.'
+        });
     }
 };
 
@@ -191,60 +214,64 @@ app.get('/api/health', (req, res) => {
 // API ROUTES
 // ==================================================
 
-// --- LOGIN ---
+// --- LOGIN - UPDATED (USES .env ONLY) ---
 app.post('/api/login', async (req, res) => {
     try {
         const { username, password } = req.body;
 
         if (!username || !password) {
             return res.status(400).json({
+                success: false,
                 error: 'Username and password are required.'
             });
         }
 
-        const [users] = await pool.query(
-            'SELECT * FROM admin_users WHERE username = ?',
-            [username]
-        );
+        const adminUsername = process.env.ADMIN_USERNAME;
+        const adminPassword = process.env.ADMIN_PASSWORD;
 
-        if (users.length === 0) {
-            return res.status(401).json({
-                error: 'Invalid username.'
+        if (!adminUsername || !adminPassword) {
+            console.error('❌ ADMIN_USERNAME or ADMIN_PASSWORD is missing from environment variables.');
+            return res.status(500).json({
+                success: false,
+                error: 'Admin authentication is not configured.'
             });
         }
 
-        const user = users[0];
-
-        // Plain text password check (preserving existing logic)
-        if (password.trim() !== user.password_hash.trim()) {
+        if (
+            username.trim() !== adminUsername.trim() ||
+            password !== adminPassword
+        ) {
             return res.status(401).json({
-                error: 'Invalid password.'
+                success: false,
+                error: 'Invalid username or password.'
             });
         }
 
         const token = jwt.sign(
             {
-                userId: user.id,
-                username: user.username
+                username: adminUsername,
+                role: 'admin'
             },
             JWT_SECRET,
-            { expiresIn: '7d' }
+            {
+                expiresIn: '7d'
+            }
         );
 
-        res.json({
+        return res.json({
             success: true,
             token,
             user: {
-                id: user.id,
-                username: user.username,
-                email: user.email
+                username: adminUsername,
+                role: 'admin'
             }
         });
 
-    } catch (err) {
-        console.error("LOGIN ERROR:", err);
-        res.status(500).json({
-            error: 'Internal Server Error'
+    } catch (error) {
+        console.error('❌ Login error:', error);
+        return res.status(500).json({
+            success: false,
+            error: 'Internal server error.'
         });
     }
 });
