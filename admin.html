@@ -439,123 +439,66 @@
                     </div>
                 </form>
             </div>
+<!-- ============================================= -->
+<!-- REVIEWS CONTENT - INSIDE MAIN CONTENT -->
+<!-- ============================================= -->
+<div id="reviewsContent" class="content-section" style="display:none;">
+    <div class="projects-header">
+        <h3>All Reviews</h3>
+        <span id="reviewsCount" style="color:var(--text-muted);font-size:0.9rem;">0 reviews</span>
+    </div>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Reviewer</th>
+                    <th>Rating</th>
+                    <th>Review</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="reviewsTable">
+                <tr>
+                    <td colspan="5" style="text-align:center; padding:40px; color: var(--text-muted);">
+                        No reviews yet.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-            <!-- ============================================= -->
-            <!-- REVIEWS CONTENT - INSIDE MAIN CONTENT -->
-            <!-- ============================================= -->
-            <div id="reviewsContent" class="content-section" style="display:none;">
-                <div class="projects-header">
-                    <h3>All Reviews</h3>
-                    <span id="reviewsCount" style="color:var(--text-muted);font-size:0.9rem;">3 reviews</span>
-                </div>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Reviewer</th>
-                                <th>Rating</th>
-                                <th>Review</th>
-                                <th>Date</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="reviewsTable">
-                           
-                            <tr>
-                       
-                                <td>Jan 5, 2026</td>
-                                <td>
-                                    <button class="action-btn delete" onclick="alert('Delete review 3')">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- ============================================= -->
-            <!-- CONTACT MESSAGES CONTENT - INSIDE MAIN CONTENT -->
-            <!-- ============================================= -->
-            <div id="contactContent" class="content-section" style="display:none;">
-                <div class="projects-header">
-                    <h3>Contact Messages</h3>
-                    <span id="contactCount" style="color:var(--text-muted);font-size:0.9rem;">4 messages</span>
-                </div>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Subject</th>
-                                <th>Message</th>
-                                <th>Date</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="contactTable">
-                            <tr>
-                                <td><strong>John Doe</strong></td>
-                                <td><a href="mailto:john@example.com" style="color:var(--primary);">john@example.com</a></td>
-                                <td>Project Inquiry</td>
-                                <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-                                    Hi Ankita, I'm interested in hiring you for a full-stack project. Please let me know your availability.
-                                </td>
-                                <td>Feb 20, 2026 10:30 AM</td>
-                                <td>
-                                    <button class="action-btn delete" onclick="alert('Delete message 1')">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Jane Smith</strong></td>
-                                <td><a href="mailto:jane@company.com" style="color:var(--primary);">jane@company.com</a></td>
-                                <td>Internship Opportunity</td>
-                                <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-                                    We're looking for a passionate developer intern. Your portfolio looks amazing!
-                                </td>
-                                <td>Feb 18, 2026 02:15 PM</td>
-                                <td>
-                                    <button class="action-btn delete" onclick="alert('Delete message 2')">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Mike Johnson</strong></td>
-                                <td><a href="mailto:mike@startup.io" style="color:var(--primary);">mike@startup.io</a></td>
-                                <td>Collaboration Request</td>
-                                <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-                                    I saw your farming website project and would love to collaborate on something similar for agriculture.
-                                </td>
-                                <td>Feb 15, 2026 09:00 AM</td>
-                                <td>
-                                    <button class="action-btn delete" onclick="alert('Delete message 3')">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><strong>Emily Davis</strong></td>
-                                <td><a href="mailto:emily@techcorp.com" style="color:var(--primary);">emily@techcorp.com</a></td>
-                                <td>Freelance Project</td>
-                                <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-                                    We need a full-stack developer for our e-commerce platform. Can you share your rates and timeline?
-                                </td>
-                                <td>Feb 12, 2026 11:45 AM</td>
-                                <td>
-                                    <button class="action-btn delete" onclick="alert('Delete message 4')">
-                                        <i class="fas fa-trash"></i> Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+<!-- ============================================= -->
+<!-- CONTACT MESSAGES CONTENT - INSIDE MAIN CONTENT -->
+<!-- ============================================= -->
+<div id="contactContent" class="content-section" style="display:none;">
+    <div class="projects-header">
+        <h3>Contact Messages</h3>
+        <span id="contactCount" style="color:var(--text-muted);font-size:0.9rem;">0 messages</span>
+    </div>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Subject</th>
+                    <th>Message</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="contactTable">
+                <tr>
+                    <td colspan="6" style="text-align:center; padding:40px; color: var(--text-muted);">
+                        No messages yet.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
             <!-- ============================================= -->
 
         </main>
