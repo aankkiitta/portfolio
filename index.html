@@ -3590,7 +3590,6 @@ I build responsive, scalable, and user-friendly web applications with clean code
 
 
 
-
   <!-- Resume -->
   <section id="resume">
     <div class="container">
@@ -3830,308 +3829,442 @@ I build responsive, scalable, and user-friendly web applications with clean code
   <div id="back-top"><i class="fas fa-arrow-up"></i></div>
 
   <script>
-    // Theme toggle
-    (function() {
-      const toggle = document.getElementById('themeToggle');
-      const icon = document.getElementById('themeIcon');
-      const html = document.documentElement;
-      const get = () => localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-      const set = t => { html.setAttribute('data-theme', t); localStorage.setItem('theme', t); icon.className = t === 'dark' ? 'fas fa-sun' : 'fas fa-moon'; };
-      set(get());
-      toggle.addEventListener('click', () => { const cur = html.getAttribute('data-theme'); set(cur === 'dark' ? 'light' : 'dark'); });
-    })();
-
-    // Mouse glow
-    (function() {
-      const g = document.getElementById('mouseGlow');
-      if (!g) return;
-      let mx=0, my=0, cx=0, cy=0;
-      document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-      function anim() { cx += (mx - cx) * 0.05; cy += (my - cy) * 0.05; g.style.left = cx + 'px'; g.style.top = cy + 'px'; requestAnimationFrame(anim); }
-      anim();
-    })();
-
-    // Loader
-    window.addEventListener('load', () => document.getElementById('loader')?.classList.add('hidden'));
-
-    // Progress bar
-    const prog = document.getElementById('progress-bar');
-    window.addEventListener('scroll', () => { const h = document.documentElement.scrollHeight - window.innerHeight; prog.style.width = (window.scrollY / h) * 100 + '%'; });
-
-    // Back to top
-    const back = document.getElementById('back-top');
-    window.addEventListener('scroll', () => back.classList.toggle('visible', window.scrollY > 500));
-    back.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
-    // Navbar scroll
-    const nav = document.getElementById('navbar');
-    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 20));
-
-    // Mobile menu
-    const toggleBtn = document.getElementById('navToggle');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const overlay = document.getElementById('navOverlay');
-    const body = document.body;
-    function openMenu() { mobileMenu.classList.add('open'); overlay.classList.add('active'); toggleBtn.classList.add('active'); body.classList.add('menu-open'); }
-    function closeMenu() { mobileMenu.classList.remove('open'); overlay.classList.remove('active'); toggleBtn.classList.remove('active'); body.classList.remove('menu-open'); }
-    toggleBtn.addEventListener('click', () => mobileMenu.classList.contains('open') ? closeMenu() : openMenu());
-    overlay.addEventListener('click', closeMenu);
-    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMenu(); });
-
-    // Active nav
-    const sections = document.querySelectorAll('section[id]');
-    const anchors = document.querySelectorAll('.nav-links a:not(.nav-connect)');
-    window.addEventListener('scroll', () => {
-      let cur = '';
-      sections.forEach(s => { if (window.scrollY >= s.offsetTop - 150) cur = s.id; });
-      anchors.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + cur));
+    // ===========================
+    // LOADER
+    // ===========================
+    window.addEventListener('load', () => {
+      document.getElementById('loader').classList.add('hidden');
     });
 
-    // Scroll reveal
-    const obs = new IntersectionObserver(entries => entries.forEach(e => e.isIntersecting && e.target.classList.add('visible')), { threshold: 0.15 });
-    document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => obs.observe(el));
+    // ===========================
+    // THEME TOGGLE
+    // ===========================
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const html = document.documentElement;
 
-    // Typing effect
-    const words = ["Full Stack Developer", "MCA Student", "Frontend Developer", "Backend Developer", "JavaScript Developer", "Node.js Developer", "Open to Internship"];
-    const typed = document.getElementById('typed-text');
-    if (typed) {
-      let wi = 0, ci = 0, del = false;
-      function type() {
-        const w = words[wi];
-        if (!del) {
-          typed.textContent = w.substring(0, ci + 1);
-          ci++;
-          if (ci === w.length) { del = true; setTimeout(type, 1800); return; }
-        } else {
-          typed.textContent = w.substring(0, ci - 1);
-          ci--;
-          if (ci === 0) { del = false; wi = (wi + 1) % words.length; }
-        }
-        setTimeout(type, del ? 50 : 100);
-      }
-      type();
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    html.setAttribute('data-theme', savedTheme);
+    themeIcon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+
+    themeToggle.addEventListener('click', () => {
+      const current = html.getAttribute('data-theme');
+      const next = current === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      themeIcon.className = next === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    });
+
+    // ===========================
+    // MOBILE MENU
+    // ===========================
+    const navToggle = document.getElementById('navToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const navOverlay = document.getElementById('navOverlay');
+
+    function toggleMenu() {
+      const isOpen = mobileMenu.classList.toggle('open');
+      navToggle.classList.toggle('active');
+      navOverlay.style.display = isOpen ? 'block' : 'none';
+      document.body.classList.toggle('menu-open', isOpen);
     }
 
-    // Reviews system
-    (function() {
-      const track = document.getElementById('reviewsTrack');
-      const dotContainer = document.getElementById('sliderDots');
-      const prevBtn = document.getElementById('prevReview');
-      const nextBtn = document.getElementById('nextReview');
-      const modal = document.getElementById('reviewModal');
-      const openBtn = document.getElementById('openReviewModal');
-      const closeBtn = document.getElementById('closeReviewModal');
-      const form = document.getElementById('reviewForm');
-      const success = document.getElementById('modalSuccess');
-      const ratingBtns = document.querySelectorAll('#ratingSelect button');
-      const ratingInput = document.getElementById('reviewRating');
-      const ratingText = document.getElementById('ratingText');
-      const photoInput = document.getElementById('reviewPhoto');
-      const photoPreview = document.getElementById('photoPreview');
-      let selectedRating = 0, currentSlide = 0, autoInterval;
+    navToggle.addEventListener('click', toggleMenu);
+    navOverlay.addEventListener('click', toggleMenu);
 
-      function updateStars(r) {
-        ratingBtns.forEach((b, i) => {
-          const star = i + 1;
-          b.classList.toggle('active', star <= r);
-          b.style.color = star <= r ? '#FFC107' : '#D1D5DB';
-          b.style.transform = star <= r ? 'scale(1)' : 'scale(1)';
-          b.style.textShadow = star <= r ? '0 0 20px rgba(255,193,7,0.3)' : 'none';
-        });
-        if (ratingText) ratingText.textContent = r > 0 ? r + '/5' : '0/5';
-        if (ratingInput) ratingInput.value = r;
-      }
-
-      function openModal() {
-        modal.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        document.body.classList.add('modal-open');
-        selectedRating = 0;
-        updateStars(0);
-        form.style.display = 'flex';
-        success.classList.remove('show');
-        form.reset();
-        photoPreview.innerHTML = '<i class="fas fa-camera"></i><span>No file chosen</span>';
-        photoPreview.classList.remove('has-image');
-      }
-
-      function closeModal() {
-        modal.classList.remove('open');
-        document.body.style.overflow = '';
-        document.body.classList.remove('modal-open');
-      }
-
-      openBtn.addEventListener('click', openModal);
-      closeBtn.addEventListener('click', closeModal);
-      modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
-      document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
-
-      ratingBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const star = parseInt(btn.dataset.star);
-          selectedRating = star;
-          updateStars(star);
-        });
-        btn.addEventListener('mouseenter', () => {
-          const star = parseInt(btn.dataset.star);
-          ratingBtns.forEach((b, i) => {
-            const val = i + 1;
-            b.style.color = val <= star ? '#FFC107' : '#D1D5DB';
-            b.style.transform = val <= star ? 'scale(1.15)' : 'scale(1)';
-            b.style.textShadow = val <= star ? '0 0 30px rgba(255,193,7,0.4)' : 'none';
-          });
-        });
-        btn.addEventListener('mouseleave', () => updateStars(selectedRating));
+    document.querySelectorAll('.mobile-menu a').forEach(link => {
+      link.addEventListener('click', () => {
+        if (mobileMenu.classList.contains('open')) toggleMenu();
       });
-
-      photoInput?.addEventListener('change', function(e) {
-        const file = this.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function(ev) {
-            photoPreview.innerHTML = `<img src="${ev.target.result}" alt="Preview" />`;
-            photoPreview.classList.add('has-image');
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-
-      photoPreview?.addEventListener('click', () => photoInput.click());
-
-      form?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const name = document.getElementById('reviewName')?.value.trim() || '';
-        const email = document.getElementById('reviewEmail')?.value.trim() || '';
-        const content = document.getElementById('reviewContent')?.value.trim() || '';
-        const rating = selectedRating;
-        if (!name || !email || !content) { alert('Please fill in all fields.'); return; }
-        if (rating === 0) { alert('Please select a rating.'); return; }
-        const fd = new FormData();
-        fd.append('name', name);
-        fd.append('email', email);
-        fd.append('review', content);
-        fd.append('rating', rating);
-        if (photoInput?.files[0]) fd.append('photo', photoInput.files[0]);
-        try {
-          const res = await fetch('https://portfolio-3-l63x.onrender.com/api/reviews',  { method: 'POST', body: fd });
-          if (!res.ok) { alert('Failed to submit review'); return; }
-          form.style.display = 'none';
-          success.classList.add('show');
-          setTimeout(() => { closeModal(); form.style.display = 'flex'; success.classList.remove('show'); loadReviews(); }, 2000);
-        } catch (err) { alert('Server Error. Please try again.'); }
-      });
-
-      async function loadReviews() {
-        try {
-         const res = await fetch('https://portfolio-3-l63x.onrender.com/api/reviews');
-          if (!res.ok) throw new Error('Failed to load');
-          const data = await res.json();
-          if (data.length === 0) {
-            track.innerHTML = `<div class="review-slide"><div class="review-avatar">✨</div><div class="review-stars">★★★★★</div><p class="review-text">"No reviews yet. Be the first to share your experience!"</p><div class="review-author">Be the First</div><div class="review-role">Leave a Review</div></div>`;
-          } else {
-            track.innerHTML = data.map(r => `
-              <div class="review-slide">
-                <div class="review-avatar">${r.image_url ? `<img src="${r.image_url}" alt="${r.name}">` : r.name.substring(0, 2).toUpperCase()}</div>
-                <div class="review-stars">${"★".repeat(Number(r.rating))}</div>
-                <p class="review-text">"${r.review}"</p>
-                <div class="review-author">${r.name}</div>
-                <div class="review-role">${r.email}</div>
-              </div>
-            `).join('');
-          }
-          initSlider();
-        } catch (err) { console.error(err); }
-      }
-
-      function initSlider() {
-        const slides = track.querySelectorAll('.review-slide');
-        if (!slides.length) return;
-        dotContainer.innerHTML = '';
-        slides.forEach((_, i) => {
-          const dot = document.createElement('button');
-          dot.className = 'slider-dot' + (i === 0 ? ' active' : '');
-          dot.dataset.index = i;
-          dot.addEventListener('click', () => goTo(i));
-          dotContainer.appendChild(dot);
-        });
-        const dots = dotContainer.querySelectorAll('.slider-dot');
-        function goTo(index) {
-          currentSlide = index;
-          track.style.transform = `translateX(-${index * 100}%)`;
-          dots.forEach((d, i) => d.classList.toggle('active', i === index));
-        }
-        function next() { goTo((currentSlide + 1) % slides.length); }
-        function prev() { goTo((currentSlide - 1 + slides.length) % slides.length); }
-        prevBtn?.addEventListener('click', () => { prev(); resetAuto(); });
-        nextBtn?.addEventListener('click', () => { next(); resetAuto(); });
-        function startAuto() { clearInterval(autoInterval); if (slides.length > 1) autoInterval = setInterval(next, 4500); }
-        function resetAuto() { clearInterval(autoInterval); startAuto(); }
-        startAuto();
-        const wrapper = document.querySelector('.reviews-wrapper');
-        wrapper?.addEventListener('mouseenter', () => clearInterval(autoInterval));
-        wrapper?.addEventListener('mouseleave', startAuto);
-        window.goToSlide = goTo;
-      }
-
-      loadReviews();
-
-
-
-      // ================= CONTACT FORM =================
-
-// ================= CONTACT FORM =================
-
-const contactForm = document.getElementById("contactForm");
-
-if (contactForm) {
-    contactForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        // Get form data
-        const formData = {
-            name: document.getElementById("name").value.trim(),
-            email: document.getElementById("email").value.trim(),
-            subject: document.getElementById("subject").value.trim(),
-            message: document.getElementById("message").value.trim()
-        };
-
-        // Show loading state
-        const submitBtn = contactForm.querySelector('button[type="submit"]');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-        submitBtn.disabled = true;
-
-        try {
-            // Use the correct URL - your backend runs on port 5000
-        const response = await fetch("https://portfolio-3-l63x.onrender.com/api/contact",  {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(formData)
-            });
-
-            const data = await response.json();
-
-            if (response.ok && data.success) {
-                alert("✅ Message sent successfully!");
-                contactForm.reset();
-            } else {
-                alert(data.message || "Failed to send message.");
-            }
-
-        } catch (err) {
-            console.error('Error:', err);
-            alert("❌ Unable to connect to the server. Please check your connection.");
-        } finally {
-            // Restore button state
-            submitBtn.innerHTML = originalText;
-            submitBtn.disabled = false;
-        }
     });
-}
-    })();
+
+    // ===========================
+    // SMOOTH SCROLL
+    // ===========================
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+        if (href === '#') return;
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // ===========================
+    // SCROLL PROGRESS BAR
+    // ===========================
+    const progressBar = document.getElementById('progress-bar');
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (scrollTop / docHeight) * 100;
+      progressBar.style.width = progress + '%';
+    });
+
+    // ===========================
+    // BACK TO TOP
+    // ===========================
+    const backTop = document.getElementById('back-top');
+    window.addEventListener('scroll', () => {
+      backTop.classList.toggle('visible', window.scrollY > 500);
+    });
+    backTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // ===========================
+    // SCROLL REVEAL
+    // ===========================
+    const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15 });
+
+    reveals.forEach(el => revealObserver.observe(el));
+
+    // ===========================
+    // MOUSE GLOW
+    // ===========================
+    const glow = document.getElementById('mouseGlow');
+    document.addEventListener('mousemove', (e) => {
+      glow.style.left = e.clientX + 'px';
+      glow.style.top = e.clientY + 'px';
+    });
+
+    // ===========================
+    // TYPING EFFECT
+    // ===========================
+    const typedText = document.getElementById('typed-text');
+    const words = [
+      'Full Stack Developer',
+      'React.js Enthusiast',
+      'Node.js Developer',
+      'MySQL Specialist',
+      'MCA Student'
+    ];
+    let wordIndex = 0, charIndex = 0, isDeleting = false;
+
+    function typeEffect() {
+      const current = words[wordIndex];
+      if (!isDeleting) {
+        typedText.textContent = current.slice(0, charIndex++);
+        if (charIndex > current.length) {
+          isDeleting = true;
+          setTimeout(typeEffect, 1500);
+          return;
+        }
+      } else {
+        typedText.textContent = current.slice(0, charIndex--);
+        if (charIndex < 0) {
+          isDeleting = false;
+          wordIndex = (wordIndex + 1) % words.length;
+          charIndex = 0;
+          setTimeout(typeEffect, 300);
+          return;
+        }
+      }
+      setTimeout(typeEffect, isDeleting ? 80 : 120);
+    }
+    typeEffect();
+
+    // ===========================
+    // NAV ACTIVE LINK
+    // ===========================
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-links a:not(.nav-connect)');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const top = section.offsetTop - 150;
+        if (window.scrollY >= top) {
+          current = section.getAttribute('id');
+        }
+      });
+      navLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+      });
+    });
+
+    // ===========================
+    // REVIEWS DATA
+    // ===========================
+    const reviewsData = [
+      {
+        name: 'Sarah Johnson',
+        role: 'Project Manager',
+        text: 'Ankita delivered an outstanding full-stack solution for our platform. Her code quality and communication were top-notch. Highly recommend!',
+        rating: 5,
+        avatar: 'https://res.cloudinary.com/dngjbgaaf/image/upload/v1785492516/portfolio/reviews/ek5cnzqz7ue4ymrrcgro.png'
+      },
+      {
+        name: 'David Chen',
+        role: 'Tech Lead',
+        text: 'Working with Ankita was a pleasure. She quickly grasped the requirements and built a responsive, performant web application that exceeded our expectations.',
+        rating: 5,
+        avatar: 'https://res.cloudinary.com/dngjbgaaf/image/upload/v1785492516/portfolio/reviews/ek5cnzqz7ue4ymrrcgro.png'
+      },
+      {
+        name: 'Priya Sharma',
+        role: 'Startup Founder',
+        text: 'Ankita built our MVP from scratch. Her full-stack skills and ability to iterate fast helped us launch on time. She is a valuable asset to any team.',
+        rating: 5,
+        avatar: 'https://res.cloudinary.com/dngjbgaaf/image/upload/v1785492516/portfolio/reviews/ek5cnzqz7ue4ymrrcgro.png'
+      }
+    ];
+
+    const track = document.getElementById('reviewsTrack');
+    const dotsContainer = document.getElementById('sliderDots');
+    let currentSlide = 0;
+    let autoSlideInterval = null;
+
+    function renderReviews() {
+      track.innerHTML = '';
+      reviewsData.forEach((review, index) => {
+        const slide = document.createElement('div');
+        slide.className = 'review-slide';
+        const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+        slide.innerHTML = `
+          <div class="review-avatar"><img src="${review.avatar}" alt="${review.name}"></div>
+          <div class="review-stars">${stars}</div>
+          <p class="review-text">"${review.text}"</p>
+          <div class="review-author">${review.name}</div>
+          <div class="review-role">${review.role}</div>
+        `;
+        track.appendChild(slide);
+      });
+      dotsContainer.innerHTML = '';
+      reviewsData.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = 'slider-dot' + (i === 0 ? ' active' : '');
+        dot.dataset.index = i;
+        dot.addEventListener('click', () => goToSlide(i));
+        dotsContainer.appendChild(dot);
+      });
+      updateSlider();
+    }
+
+    function updateSlider() {
+      const slides = track.children;
+      const total = slides.length;
+      if (total === 0) return;
+      const offset = -currentSlide * 100;
+      track.style.transform = `translateX(${offset}%)`;
+      document.querySelectorAll('.slider-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentSlide);
+      });
+    }
+
+    function goToSlide(index) {
+      const total = reviewsData.length;
+      currentSlide = (index + total) % total;
+      updateSlider();
+    }
+
+    function nextSlide() { goToSlide(currentSlide + 1); }
+    function prevSlide() { goToSlide(currentSlide - 1); }
+
+    document.getElementById('nextReview').addEventListener('click', () => {
+      nextSlide();
+      resetAutoSlide();
+    });
+    document.getElementById('prevReview').addEventListener('click', () => {
+      prevSlide();
+      resetAutoSlide();
+    });
+
+    function resetAutoSlide() {
+      if (autoSlideInterval) {
+        clearInterval(autoSlideInterval);
+        autoSlideInterval = null;
+      }
+      startAutoSlide();
+    }
+
+    function startAutoSlide() {
+      autoSlideInterval = setInterval(nextSlide, 6000);
+    }
+
+    renderReviews();
+    startAutoSlide();
+
+    // ===========================
+    // REVIEW MODAL
+    // ===========================
+    const modalOverlay = document.getElementById('reviewModal');
+    const openModalBtn = document.getElementById('openReviewModal');
+    const closeModalBtn = document.getElementById('closeReviewModal');
+    const reviewForm = document.getElementById('reviewForm');
+    const ratingButtons = document.querySelectorAll('#ratingSelect button');
+    const ratingText = document.getElementById('ratingText');
+    const reviewRating = document.getElementById('reviewRating');
+    const modalSuccess = document.getElementById('modalSuccess');
+
+    function openModal() {
+      modalOverlay.classList.add('open');
+      document.body.classList.add('modal-open');
+      reviewForm.style.display = 'flex';
+      modalSuccess.classList.remove('show');
+      document.querySelector('.modal-header').style.display = 'block';
+    }
+
+    function closeModal() {
+      modalOverlay.classList.remove('open');
+      document.body.classList.remove('modal-open');
+    }
+
+    openModalBtn.addEventListener('click', openModal);
+    closeModalBtn.addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modalOverlay.classList.contains('open')) closeModal();
+    });
+
+    // Rating
+    ratingButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        ratingButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const rating = parseInt(btn.dataset.star);
+        reviewRating.value = rating;
+        ratingText.textContent = rating + '/5';
+      });
+    });
+
+    // Photo preview
+    const photoInput = document.getElementById('reviewPhoto');
+    const photoPreview = document.getElementById('photoPreview');
+
+    photoInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+          photoPreview.innerHTML = `<img src="${ev.target.result}" alt="Preview">`;
+          photoPreview.classList.add('has-image');
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Submit review
+    reviewForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const submitBtn = this.querySelector('.btn-primary');
+      submitBtn.classList.add('loading');
+
+      setTimeout(() => {
+        submitBtn.classList.remove('loading');
+        submitBtn.classList.add('success');
+        submitBtn.innerHTML = '<i class="fas fa-check"></i> Submitted!';
+
+        reviewForm.style.display = 'none';
+        document.querySelector('.modal-header').style.display = 'none';
+        modalSuccess.classList.add('show');
+
+        setTimeout(() => {
+          submitBtn.classList.remove('success');
+          submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Review';
+          reviewForm.reset();
+          ratingButtons.forEach(b => b.classList.remove('active'));
+          ratingText.textContent = '0/5';
+          reviewRating.value = '0';
+          photoPreview.innerHTML = '<i class="fas fa-camera"></i><span>No file chosen</span>';
+          photoPreview.classList.remove('has-image');
+          closeModal();
+        }, 2500);
+      }, 1800);
+    });
+
+    // ===========================
+    // CONTACT FORM - PREMIUM
+    // ===========================
+    const contactForm = document.getElementById('contactForm');
+    const contactAlert = document.getElementById('contactAlert');
+    const contactSubmitBtn = document.getElementById('contactSubmitBtn');
+
+    contactForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // Collect form data
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const subject = document.getElementById('subject').value.trim();
+      const message = document.getElementById('message').value.trim();
+
+      // Basic validation
+      if (!name || !email || !subject || !message) {
+        contactAlert.style.display = 'block';
+        contactAlert.style.background = '#fef2f2';
+        contactAlert.style.color = '#b91c1c';
+        contactAlert.style.padding = '12px 16px';
+        contactAlert.style.borderRadius = '12px';
+        contactAlert.style.marginBottom = '16px';
+        contactAlert.style.border = '1px solid #fecaca';
+        contactAlert.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please fill all fields.';
+        return;
+      }
+
+      // Email validation
+      if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+        contactAlert.style.display = 'block';
+        contactAlert.style.background = '#fef2f2';
+        contactAlert.style.color = '#b91c1c';
+        contactAlert.style.padding = '12px 16px';
+        contactAlert.style.borderRadius = '12px';
+        contactAlert.style.marginBottom = '16px';
+        contactAlert.style.border = '1px solid #fecaca';
+        contactAlert.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please enter a valid email address.';
+        return;
+      }
+
+      // Show loading state
+      contactSubmitBtn.classList.add('loading');
+      contactSubmitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+      // Simulate sending
+      setTimeout(() => {
+        contactSubmitBtn.classList.remove('loading');
+
+        // Success message
+        contactAlert.style.display = 'block';
+        contactAlert.style.background = '#ecfdf5';
+        contactAlert.style.color = '#065f46';
+        contactAlert.style.padding = '12px 16px';
+        contactAlert.style.borderRadius = '12px';
+        contactAlert.style.marginBottom = '16px';
+        contactAlert.style.border = '1px solid #a7f3d0';
+        contactAlert.innerHTML = '<i class="fas fa-check-circle"></i> Your message has been sent successfully! I\'ll get back to you soon.';
+
+        // Reset form
+        contactForm.reset();
+
+        // Reset button
+        contactSubmitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send Message';
+
+        // Hide alert after 8 seconds
+        setTimeout(() => {
+          contactAlert.style.display = 'none';
+        }, 8000);
+      }, 2000);
+    });
+
+    // ===========================
+    // STICKY NAVBAR SHADOW
+    // ===========================
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
   </script>
 </body>
 </html>
