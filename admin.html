@@ -51,19 +51,25 @@
                 </div>
             </div>
             <nav class="sidebar-nav">
-                <a href="#" class="active" data-tab="dashboard">
-                    <i class="fas fa-th-large"></i> Dashboard
-                </a>
-                <a href="#" data-tab="projects">
-                    <i class="fas fa-folder-open"></i> Projects
-                </a>
-                <a href="#" data-tab="create">
-                    <i class="fas fa-plus-circle"></i> Create Project
-                </a>
-                <a href="#" id="logoutBtn">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </a>
-            </nav>
+    <a href="#" class="active" data-tab="dashboard">
+        <i class="fas fa-th-large"></i> Dashboard
+    </a>
+    <a href="#" data-tab="projects">
+        <i class="fas fa-folder-open"></i> Projects
+    </a>
+    <a href="#" data-tab="create">
+        <i class="fas fa-plus-circle"></i> Create Project
+    </a>
+    <a href="#" data-tab="reviews">
+        <i class="fas fa-star"></i> Reviews
+    </a>
+    <a href="#" data-tab="contact">
+        <i class="fas fa-envelope"></i> Contact Messages
+    </a>
+    <a href="#" id="logoutBtn">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+</nav>
         </aside>
 
         <!-- Main Content -->
@@ -473,6 +479,60 @@
             </div>
         </div>
     </div>
+
+
+
+
+    <!-- Reviews Content -->
+<div id="reviewsContent" class="content-section" style="display:none;">
+    <div class="projects-header">
+        <h3>All Reviews</h3>
+        <span id="reviewsCount" style="color:var(--text-muted);font-size:0.9rem;">0 reviews</span>
+    </div>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Reviewer</th>
+                    <th>Rating</th>
+                    <th>Review</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="reviewsTable"></tbody>
+        </table>
+    </div>
+</div>
+
+
+
+<!-- Contact Messages Content -->
+<div id="contactContent" class="content-section" style="display:none;">
+    <div class="projects-header">
+        <h3>Contact Messages</h3>
+        <span id="contactCount" style="color:var(--text-muted);font-size:0.9rem;">0 messages</span>
+    </div>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Subject</th>
+                    <th>Message</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="contactTable"></tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
 
     <!-- ==================================================
        SCRIPTS

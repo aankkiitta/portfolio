@@ -832,3 +832,35 @@ small {
         padding: 12px;
     }
 }
+
+
+/* ==================================================
+   REVIEWS & CONTACT TABLES
+================================================== */
+#reviewsContent .table-wrapper td,
+#contactContent .table-wrapper td {
+    vertical-align: middle;
+}
+
+#reviewsContent .table-wrapper td:first-child {
+    min-width: 120px;
+}
+
+#contactContent .table-wrapper td:nth-child(4) {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    #reviewsContent .table-wrapper,
+    #contactContent .table-wrapper {
+        overflow-x: auto;
+    }
+    
+    #reviewsContent table,
+    #contactContent table {
+        min-width: 600px;
+    }
+}
