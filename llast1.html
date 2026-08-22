@@ -1693,13 +1693,42 @@ section {
   transition: border-color 0.5s;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-
 .typing-text {
   display: flex;
   align-items: center;
   gap: 10px;
   font-size: 2rem;
   font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .typing-text {
+    font-size: 1.5rem !important;
+    gap: 7px;
+    line-height: 1.3;
+  }
+
+  .typing-text .star {
+    font-size: 1.2rem;
+  }
+
+  .typing-text .cursor {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .typing-text {
+    font-size: 1.4rem !important;
+  }
+
+  .typing-text .star {
+    font-size: 1.1rem;
+  }
+
+  .typing-text .cursor {
+    font-size: 1.2rem;
+  }
 }
 .star {
   color: #c3bcbc;
@@ -3919,6 +3948,515 @@ section {
 body.modal-open {
   overflow: hidden !important;
 }
+/* ==========================================
+   HERO PHOTO - DESKTOP (UNCHANGED)
+========================================== */
+
+.profile-image-wrapper {
+    width: 100%;
+    max-width: 680px;
+    height: 680px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    overflow: visible;
+    background: transparent;
+    position: relative;
+    transform: translateY(-70px);
+    margin-bottom: -20px;
+}
+
+.hero-profile-image {
+    width: 125%;
+    height: 125%;
+    object-fit: contain;
+    object-position: center bottom;
+    display: block;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    transform: translateY(-55px);
+    animation: profileFloat 6s ease-in-out infinite;
+    filter:
+        drop-shadow(6px 6px 0px rgba(108, 77, 255, 0.12))
+        drop-shadow(12px 12px 0px rgba(108, 77, 255, 0.08))
+        drop-shadow(18px 18px 0px rgba(108, 77, 255, 0.04))
+        drop-shadow(0 20px 25px rgba(70, 55, 120, 0.10));
+}
+
+@keyframes profileFloat {
+    0%, 100% {
+        transform: translateY(-55px);
+    }
+    50% {
+        transform: translateY(-62px);
+    }
+}
+
+
+/* ==========================================
+   TABLET
+========================================== */
+
+@media (max-width: 1024px) {
+    .profile-image-wrapper {
+        max-width: 570px;
+        height: 570px;
+        transform: translateY(-50px);
+        margin-bottom: -40px;
+    }
+    .hero-profile-image {
+        width: 115%;
+        height: 115%;
+        object-fit: contain;
+        object-position: center bottom;
+        transform: translateY(-40px);
+        filter:
+            drop-shadow(5px 5px 0px rgba(108, 77, 255, 0.12))
+            drop-shadow(10px 10px 0px rgba(108, 77, 255, 0.08))
+            drop-shadow(15px 15px 0px rgba(108, 77, 255, 0.04))
+            drop-shadow(0 18px 22px rgba(70, 55, 120, 0.10));
+    }
+}
+
+
+/* ==========================================
+   MOBILE - COMPLETE FIX
+========================================== */
+
+@media (max-width: 768px) {
+    /* === HERO GRID === */
+    .hero-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* === HERO LEFT COLUMN === */
+    .hero-left {
+        order: 1 !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0.3rem !important;
+    }
+
+    /* === HERO RIGHT COLUMN === */
+    .hero-right {
+        order: 2 !important;
+        width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    /* === PROFILE INFO CARD === */
+    .profile-info-card {
+        margin: 0 !important;
+        padding: 0.5rem 0.3rem !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .profile-info-card .col {
+        padding: 0 0.2rem !important;
+    }
+    .profile-info-card .col .icon {
+        font-size: 1rem !important;
+    }
+    .profile-info-card .col .label {
+        font-size: 0.6rem !important;
+    }
+    .profile-info-card .col .sub {
+        font-size: 0.5rem !important;
+    }
+
+    /* === IMAGE WRAPPER === */
+    .profile-image-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        transform: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        position: relative !important;
+        overflow: visible !important;
+        background: transparent !important;
+    }
+
+    /* === PROFILE IMAGE - LARGE & FULLY VISIBLE === */
+    .hero-profile-image {
+        width: 100% !important;
+        max-width: 520px !important;
+        height: auto !important;
+        aspect-ratio: 1/1 !important;
+        object-fit: contain !important;
+        object-position: center !important;
+        display: block !important;
+        position: relative !important;
+        top: 0 !important;
+        transform: none !important;
+        animation: profileFloatMobile 6s ease-in-out infinite !important;
+        filter:
+            drop-shadow(4px 4px 0px rgba(108, 77, 255, 0.12))
+            drop-shadow(8px 8px 0px rgba(108, 77, 255, 0.08))
+            drop-shadow(12px 12px 0px rgba(108, 77, 255, 0.04))
+            drop-shadow(0 15px 20px rgba(70, 55, 120, 0.10)) !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+    }
+
+    @keyframes profileFloatMobile {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-7px);
+        }
+    }
+
+    /* === STATS BAR === */
+    .stats-bar {
+        margin-top: 0.15rem !important;
+        padding: 0.6rem 0.5rem !important;
+        width: 100% !important;
+    }
+
+    /* === HERO SECTION === */
+    #hero {
+        padding: 5.5rem 0 0.25rem !important;
+        min-height: auto !important;
+        margin: 0 !important;
+    }
+
+    /* === HERO BUTTONS === */
+    .hero-buttons {
+        margin: 0 !important;
+        padding: 0 !important;
+        gap: 0.4rem !important;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.8rem !important;
+    }
+
+    /* === CONTAINER === */
+    .container {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    /* === REMOVE ALL EXTRA SPACING === */
+    .hero-badge {
+        margin-bottom: 0.3rem !important;
+    }
+    .hero-title {
+        margin-bottom: 0.2rem !important;
+    }
+    .hero-desc {
+        margin-bottom: 0.5rem !important;
+    }
+    .typing-text {
+        margin-bottom: 0.3rem !important;
+    }
+}
+
+
+/* ==========================================
+   SMALL MOBILE (480px)
+========================================== */
+
+@media (max-width: 480px) {
+    .hero-profile-image {
+        max-width: 400px !important;
+    }
+
+    .profile-info-card {
+        padding: 0.4rem 0.2rem !important;
+    }
+    .profile-info-card .col .icon {
+        font-size: 0.85rem !important;
+    }
+    .profile-info-card .col .label {
+        font-size: 0.55rem !important;
+    }
+    .profile-info-card .col .sub {
+        font-size: 0.45rem !important;
+    }
+
+    .stats-bar {
+        margin-top: 0.1rem !important;
+        padding: 0.5rem 0.3rem !important;
+    }
+
+    #hero {
+        padding: 5rem 0 0.15rem !important;
+    }
+
+    .hero-buttons {
+        gap: 0.3rem !important;
+    }
+    .btn-primary,
+    .btn-secondary {
+        font-size: 0.75rem !important;
+        padding: 0.4rem 0.8rem !important;
+    }
+}
+
+
+/* ==========================================
+   VERY SMALL MOBILE (360px)
+========================================== */
+
+@media (max-width: 360px) {
+    .hero-profile-image {
+        max-width: 340px !important;
+    }
+
+    .profile-info-card {
+        padding: 0.3rem 0.15rem !important;
+    }
+    .profile-info-card .col .icon {
+        font-size: 0.7rem !important;
+    }
+    .profile-info-card .col .label {
+        font-size: 0.5rem !important;
+    }
+    .profile-info-card .col .sub {
+        font-size: 0.4rem !important;
+    }
+
+    .stats-bar {
+        margin-top: 0.05rem !important;
+        padding: 0.4rem 0.2rem !important;
+    }
+    .stats-bar .stat-col .s-icon {
+        font-size: 0.8rem !important;
+        width: 1.2rem !important;
+    }
+    .stats-bar .stat-col .s-content .s-number {
+        font-size: 0.7rem !important;
+    }
+    .stats-bar .stat-col .s-content .s-label {
+        font-size: 0.45rem !important;
+    }
+
+    #hero {
+        padding: 4.5rem 0 0.1rem !important;
+    }
+}
+
+
+/* ==========================================
+   DARK THEME
+========================================== */
+
+[data-theme="dark"] .hero-profile-image {
+    filter:
+        drop-shadow(5px 5px 0px rgba(108, 77, 255, 0.10))
+        drop-shadow(10px 10px 0px rgba(108, 77, 255, 0.06))
+        drop-shadow(15px 15px 0px rgba(108, 77, 255, 0.03))
+        drop-shadow(0 15px 20px rgba(0, 0, 0, 0.25)) !important;
+}
+
+[data-theme="dark"] .profile-image-wrapper {
+    background: transparent !important;
+}
+
+
+/* ==========================================
+   ADDITIONAL SAFETY FIXES
+========================================== */
+
+@media (max-width: 768px) {
+    /* Remove any hidden margins or padding from parent containers */
+    .hero-grid,
+    .hero-left,
+    .hero-right,
+    .profile-image-wrapper,
+    .hero-profile-image,
+    .profile-info-card,
+    .stats-bar,
+    #hero,
+    .container {
+        box-sizing: border-box !important;
+    }
+
+    /* Ensure no row-gap on hero grid */
+    .hero-grid {
+        row-gap: 0 !important;
+        column-gap: 0 !important;
+    }
+
+    /* Remove any spacing from all children of hero-left */
+    .hero-left > * {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+    /* Ensure stats bar comes immediately after image */
+    .hero-right + .stats-bar {
+        margin-top: 0.15rem !important;
+    }
+
+    /* Fix any grid spacing in the parent */
+    .hero-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ==========================================
+   SOCIAL LINKS - MOBILE VISIBLE
+========================================== */
+
+@media (max-width: 768px) {
+
+    .social-links,
+    .social-sidebar,
+    .hero-social,
+    .social-icons {
+        display: flex !important;
+
+        position: absolute !important;
+
+        left: 10px !important;
+        top: 50% !important;
+
+        transform: translateY(-50%) !important;
+
+        flex-direction: column !important;
+
+        align-items: center !important;
+        justify-content: center !important;
+
+        gap: 18px !important;
+
+        z-index: 1000 !important;
+
+        width: 42px !important;
+        padding: 12px 8px !important;
+
+        border-radius: 25px !important;
+
+        background: rgba(255, 255, 255, 0.90) !important;
+
+        box-shadow:
+            0 8px 25px rgba(70, 55, 120, 0.12) !important;
+
+        backdrop-filter: blur(10px) !important;
+    }
+
+
+    .social-links a,
+    .social-sidebar a,
+    .hero-social a,
+    .social-icons a {
+        display: flex !important;
+
+        align-items: center !important;
+        justify-content: center !important;
+
+        width: 32px !important;
+        height: 32px !important;
+
+        color: #182033 !important;
+
+        text-decoration: none !important;
+
+        font-size: 18px !important;
+
+        transition: all 0.3s ease !important;
+    }
+
+
+    .social-links a:hover,
+    .social-sidebar a:hover,
+    .hero-social a:hover,
+    .social-icons a:hover {
+        color: #6c4dff !important;
+
+        transform: translateY(-3px) !important;
+    }
+}
+
+
+/* ==========================================
+   SMALL MOBILE
+========================================== */
+
+@media (max-width: 480px) {
+
+    .social-links,
+    .social-sidebar,
+    .hero-social,
+    .social-icons {
+        left: 6px !important;
+
+        width: 38px !important;
+
+        padding: 10px 6px !important;
+
+        gap: 12px !important;
+
+        border-radius: 22px !important;
+    }
+
+
+    .social-links a,
+    .social-sidebar a,
+    .hero-social a,
+    .social-icons a {
+        width: 28px !important;
+        height: 28px !important;
+
+        font-size: 16px !important;
+    }
+}
+
+
+/* ==========================================
+   VERY SMALL MOBILE
+========================================== */
+
+@media (max-width: 360px) {
+
+    .social-links,
+    .social-sidebar,
+    .hero-social,
+    .social-icons {
+        left: 4px !important;
+
+        width: 34px !important;
+
+        padding: 8px 5px !important;
+
+        gap: 9px !important;
+    }
+
+
+    .social-links a,
+    .social-sidebar a,
+    .hero-social a,
+    .social-icons a {
+        width: 25px !important;
+        height: 25px !important;
+
+        font-size: 14px !important;
+    }
+}
 </style>
 </head>
 <body>
@@ -3982,7 +4520,10 @@ body.modal-open {
     <div class="container hero-grid">
       <div class="hero-left reveal-left">
         <div class="hero-badge"><i class="fas fa-code"></i> Full Stack Developer &amp; MCA Student</div>
-        <h1 class="hero-title"><span class="hi">Hi, I'm</span><br><span class="name">Ankita</span><br><span class="name">Chauhan</span></h1>
+  <h1 class="hero-title">
+    <span class="hi">Hi, I'm</span><br>
+    <span class="name">Ankita Chauhan</span>
+</h1>
         <h2 class="typing-text"><span class="star">✦</span><span id="typed-text"></span><span class="cursor">|</span></h2>
 <p class="hero-desc">
 I build responsive, scalable, and user-friendly web applications with clean code, modern technologies, and a strong focus on performance, usability, and real-world solutions.
@@ -4017,64 +4558,16 @@ I build responsive, scalable, and user-friendly web applications with clean code
 
 </div>
       </div>
-      <div class="hero-right reveal-right">
-        <div class="profile-card">
-          <div class="vscode-editor">
-            <div class="editor-header"><div class="mac-dots"><span></span><span></span><span></span></div><span class="editor-title">portfolio.js — Visual Studio Code</span></div>
-          <div class="editor-body">
-    <div class="code-line">
-        <span class="line-number">1</span>
-        <span><span class="keyword">const</span> <span class="variable">developer</span> = {</span>
-    </div>
-
-    <div class="code-line">
-        <span class="line-number">2</span>
-        <span>&nbsp;&nbsp;<span class="attribute">name</span>: <span class="string">"Ankita Chauhan"</span>,</span>
-    </div>
-
-    <div class="code-line">
-        <span class="line-number">3</span>
-        <span>&nbsp;&nbsp;<span class="attribute">role</span>: <span class="string">"Full Stack Web Developer"</span>,</span>
-    </div>
-
-    <div class="code-line">
-        <span class="line-number">4</span>
-        <span>&nbsp;&nbsp;<span class="attribute">frontend</span>: [<span class="string">"HTML"</span>, <span class="string">"CSS"</span>, <span class="string">"JavaScript"</span>, <span class="string">"React"</span>],</span>
-    </div>
-
-    <div class="code-line">
-        <span class="line-number">5</span>
-        <span>&nbsp;&nbsp;<span class="attribute">backend</span>: [<span class="string">"Node.js"</span>, <span class="string">"Express.js"</span>],</span>
-    </div>
-
-    <div class="code-line">
-        <span class="line-number">6</span>
-        <span>&nbsp;&nbsp;<span class="attribute">database</span>: <span class="string">"MySQL"</span>,</span>
-    </div>
-
-    <div class="code-line">
-        <span class="line-number">7</span>
-        <span>&nbsp;&nbsp;<span class="attribute">currentFocus</span>: <span class="string">"Building Full Stack Projects"</span>,</span>
-    </div>
-
-    <div class="code-line">
-        <span class="line-number">8</span>
-        <span>&nbsp;&nbsp;<span class="attribute">status</span>: <span class="string">"Open to Internships"</span></span>
-    </div>
-
-    <div class="code-line">
-        <span class="line-number">9</span>
-        <span>};</span>
-    </div>
-
-    <div class="code-line">
-        <span class="line-number">10</span>
-        <span><span class="comment">// Crafting modern web experiences with clean code 🚀</span> <span class="cursor-blink"></span></span>
+      <!-- HERO IMAGE -->
+<div class="hero-right reveal-right">
+    <div class="profile-image-wrapper">
+        <img
+            src="header3.png"
+            alt="Ankita Chauhan"
+            class="hero-profile-image"
+        >
     </div>
 </div>
-          </div>
-        </div>
-      </div>
     </div>
   </section>
 
