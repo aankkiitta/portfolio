@@ -1027,6 +1027,65 @@ app.use((err, req, res, next) => {
     }
 });
 
+
+
+
+// ==================================================
+// CONTACT MESSAGES API ROUTES (Admin)
+// ==================================================
+
+// GET all contact messages (Admin only)
+app.get('/api/contact-messages', authenticateToken, async (req, res) => {
+    try {
+        const [messages] = await pool.query(`
+            SELECT id, name, email, subject, message, created_at
+            FROM contact_messages 
+            ORDER BY created_at DESC
+        `);
+        res.json(messages);
+    } catch (error) {
+        console.error('Error fetching contact messages:', error);
+        res.status(500).json({ error: 'Failed to fetch messages.' });
+    }
+});
+
+// DELETE contact message (Admin only)
+app.delete('/api/contact-messages/:id', authenticateToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        const [existing] = await pool.query('SELECT id FROM contact_messages WHERE id = ?', [id]);
+        if (existing.length === 0) {
+            return res.status(404).json({ error: 'Message not found.' });
+        }
+        
+        await pool.query('DELETE FROM contact_messages WHERE id = ?', [id]);
+        
+        res.json({ message: 'Message deleted successfully!' });
+    } catch (error) {
+        console.error('Error deleting contact message:', error);
+        res.status(500).json({ error: 'Failed to delete message.' });
+    }
+});
+// DELETE review (Admin only) - Add this if not exists
+app.delete('/api/reviews/:id', authenticateToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        const [existing] = await pool.query('SELECT id FROM reviews WHERE id = ?', [id]);
+        if (existing.length === 0) {
+            return res.status(404).json({ error: 'Review not found.' });
+        }
+        
+        await pool.query('DELETE FROM reviews WHERE id = ?', [id]);
+        
+        res.json({ message: 'Review deleted successfully!' });
+    } catch (error) {
+        console.error('Error deleting review:', error);
+        res.status(500).json({ error: 'Failed to delete review.' });
+    }
+});
+
 // ==================================================
 // 404 Handler
 // ==================================================

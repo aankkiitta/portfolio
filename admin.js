@@ -1230,49 +1230,59 @@ async function loadContactMessages() {
             return;
         }
         
+        console.log('🔍 Fetching contact messages from:', `${API_URL}/contact-messages`);
+        
         const response = await fetch(`${API_URL}/contact-messages`, {
-            headers: getAuthHeaders()  // <-- Add this!
+            headers: getAuthHeaders()
         });
+        
+        console.log('📡 Response status:', response.status);
         
         if (response.status === 401 || response.status === 403) {
             handleUnauthorized();
             return;
         }
         
-        if (response.ok) {
-            const messages = await response.json();
-            const tbody = document.getElementById('contactTable');
-            const countEl = document.getElementById('contactCount');
-            
-            if (countEl) countEl.textContent = `${messages.length} messages`;
-            
-            if (!messages || messages.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color: var(--text-muted);">No messages yet.</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = messages.map(m => `
-                <tr>
-                    <td><strong>${m.name}</strong></td>
-                    <td><a href="mailto:${m.email}" style="color:var(--primary);">${m.email}</a></td>
-                    <td>${m.subject}</td>
-                    <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-                        ${m.message || ''}
-                    </td>
-                    <td>${m.created_at ? new Date(m.created_at).toLocaleString() : 'N/A'}</td>
-                    <td>
-                        <button class="action-btn delete" onclick="deleteContactMessage(${m.id})">
-                            <i class="fas fa-trash"></i> Delete
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
+        
+        const messages = await response.json();
+        console.log('📦 Messages received:', messages);
+        
+        const tbody = document.getElementById('contactTable');
+        const countEl = document.getElementById('contactCount');
+        
+        if (countEl) countEl.textContent = `${messages.length} messages`;
+        
+        if (!messages || messages.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color: var(--text-muted);">No messages yet.</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = messages.map(m => `
+            <tr>
+                <td><strong>${m.name}</strong></td>
+                <td><a href="mailto:${m.email}" style="color:var(--primary);">${m.email}</a></td>
+                <td>${m.subject}</td>
+                <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                    ${m.message || ''}
+                </td>
+                <td>${m.created_at ? new Date(m.created_at).toLocaleString() : 'N/A'}</td>
+                <td>
+                    <button class="action-btn delete" onclick="deleteContactMessage(${m.id})">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+        
     } catch (error) {
-        console.error('Error loading contact messages:', error);
-        showToast('Cannot connect to the live server.', 'error');
+        console.error('❌ Error loading contact messages:', error);
+        showToast('Cannot connect to the live server. ' + error.message, 'error');
     }
 }
+
 async function deleteContactMessage(id) {
     showConfirm(`Are you sure you want to delete this message?`, async () => {
         try {
@@ -1302,7 +1312,6 @@ async function deleteContactMessage(id) {
         }
     });
 }
-
 // ==================================================
 // INITIALIZE
 // ==================================================
