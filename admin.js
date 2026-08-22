@@ -147,6 +147,10 @@ document.querySelectorAll('.sidebar-nav a[data-tab]').forEach(link => {
     });
 });
 
+// ==================================================
+// SHOW TAB - SINGLE UNIFIED FUNCTION
+// ==================================================
+
 function showTab(tab) {
     document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
     document.querySelector(`.sidebar-nav a[data-tab="${tab}"]`)?.classList.add('active');
@@ -156,7 +160,9 @@ function showTab(tab) {
     const titles = {
         dashboard: 'Dashboard',
         projects: 'All Projects',
-        create: editingId ? 'Edit Project' : 'Create New Project'
+        create: editingId ? 'Edit Project' : 'Create New Project',
+        reviews: 'Reviews',
+        contact: 'Contact Messages'
     };
     
     document.getElementById('pageTitle').textContent = titles[tab] || 'Dashboard';
@@ -173,6 +179,12 @@ function showTab(tab) {
         document.getElementById('submitBtn').innerHTML = editingId ? 
             '<i class="fas fa-save"></i> Update Project' : 
             '<i class="fas fa-save"></i> Save Project';
+    } else if (tab === 'reviews') {
+        document.getElementById('reviewsContent').style.display = 'block';
+        loadReviews();
+    } else if (tab === 'contact') {
+        document.getElementById('contactContent').style.display = 'block';
+        loadContactMessages();
     }
 }
 
@@ -182,6 +194,12 @@ function showTab(tab) {
 
 async function loadDashboard() {
     try {
+        const token = getToken();
+        if (!token) {
+            handleUnauthorized();
+            return;
+        }
+        
         const response = await fetch(`${API_URL}/projects`, {
             headers: getAuthHeaders()
         });
@@ -214,6 +232,12 @@ async function loadDashboard() {
 
 async function loadAllProjects() {
     try {
+        const token = getToken();
+        if (!token) {
+            handleUnauthorized();
+            return;
+        }
+        
         const response = await fetch(`${API_URL}/projects`, {
             headers: getAuthHeaders()
         });
@@ -265,6 +289,12 @@ function renderProjectRows(projects) {
 
 async function loadProjectsSelect() {
     try {
+        const token = getToken();
+        if (!token) {
+            handleUnauthorized();
+            return;
+        }
+        
         const response = await fetch(`${API_URL}/projects`, {
             headers: getAuthHeaders()
         });
@@ -1160,6 +1190,186 @@ document.addEventListener('keydown', (e) => {
         closeConfirm();
     }
 });
+
+// ==================================================
+// REVIEWS MANAGEMENT
+// ==================================================
+
+async function loadReviews() {
+    try {
+        const token = getToken();
+        if (!token) {
+            handleUnauthorized();
+            return;
+        }
+        
+        const response = await fetch(`${API_URL}/reviews`, {
+            headers: getAuthHeaders()
+        });
+        
+        if (response.status === 401 || response.status === 403) {
+            handleUnauthorized();
+            return;
+        }
+        
+        if (response.ok) {
+            const reviews = await response.json();
+            const tbody = document.getElementById('reviewsTable');
+            const countEl = document.getElementById('reviewsCount');
+            
+            if (countEl) countEl.textContent = `${reviews.length} reviews`;
+            
+            if (!reviews || reviews.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:40px; color: var(--text-muted);">No reviews yet.</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = reviews.map(r => `
+                <tr>
+                    <td>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            ${r.image_url ? `<img src="${r.image_url}" alt="${r.name}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;" />` : ''}
+                            <strong>${r.name}</strong>
+                        </div>
+                    </td>
+                    <td>
+                        <span style="color:#fbbf24;font-size:0.9rem;">
+                            ${'★'.repeat(Number(r.rating))}${'☆'.repeat(5 - Number(r.rating))}
+                        </span>
+                    </td>
+                    <td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                        ${r.review || ''}
+                    </td>
+                    <td>${r.created_at ? new Date(r.created_at).toLocaleDateString() : 'N/A'}</td>
+                    <td>
+                        <button class="action-btn delete" onclick="deleteReview(${r.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    } catch (error) {
+        console.error('Error loading reviews:', error);
+        showToast('Cannot connect to the live server.', 'error');
+    }
+}
+
+async function deleteReview(id) {
+    showConfirm(`Are you sure you want to delete this review?`, async () => {
+        try {
+            const token = getToken();
+            if (!token) {
+                handleUnauthorized();
+                return;
+            }
+            
+            const response = await fetch(`${API_URL}/reviews/${id}`, {
+                method: 'DELETE',
+                headers: { 
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (response.ok) {
+                showToast('Review deleted successfully!', 'success');
+                loadReviews();
+            } else {
+                const data = await response.json();
+                showToast(data.error || 'Failed to delete review.', 'error');
+            }
+        } catch (error) {
+            showToast('Cannot connect to the live server.', 'error');
+            console.error('Error deleting review:', error);
+        }
+    });
+}
+
+// ==================================================
+// CONTACT MESSAGES MANAGEMENT
+// ==================================================
+
+async function loadContactMessages() {
+    try {
+        const token = getToken();
+        if (!token) {
+            handleUnauthorized();
+            return;
+        }
+        
+        const response = await fetch(`${API_URL}/contact-messages`, {
+            headers: getAuthHeaders()
+        });
+        
+        if (response.status === 401 || response.status === 403) {
+            handleUnauthorized();
+            return;
+        }
+        
+        if (response.ok) {
+            const messages = await response.json();
+            const tbody = document.getElementById('contactTable');
+            const countEl = document.getElementById('contactCount');
+            
+            if (countEl) countEl.textContent = `${messages.length} messages`;
+            
+            if (!messages || messages.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color: var(--text-muted);">No messages yet.</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = messages.map(m => `
+                <tr>
+                    <td><strong>${m.name}</strong></td>
+                    <td><a href="mailto:${m.email}" style="color:var(--primary);">${m.email}</a></td>
+                    <td>${m.subject}</td>
+                    <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                        ${m.message || ''}
+                    </td>
+                    <td>${m.created_at ? new Date(m.created_at).toLocaleString() : 'N/A'}</td>
+                    <td>
+                        <button class="action-btn delete" onclick="deleteContactMessage(${m.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    } catch (error) {
+        console.error('Error loading contact messages:', error);
+        showToast('Cannot connect to the live server.', 'error');
+    }
+}
+
+async function deleteContactMessage(id) {
+    showConfirm(`Are you sure you want to delete this message?`, async () => {
+        try {
+            const token = getToken();
+            if (!token) {
+                handleUnauthorized();
+                return;
+            }
+            
+            const response = await fetch(`${API_URL}/contact-messages/${id}`, {
+                method: 'DELETE',
+                headers: { 
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (response.ok) {
+                showToast('Message deleted successfully!', 'success');
+                loadContactMessages();
+            } else {
+                const data = await response.json();
+                showToast(data.error || 'Failed to delete message.', 'error');
+            }
+        } catch (error) {
+            showToast('Cannot connect to the live server.', 'error');
+            console.error('Error deleting message:', error);
+        }
+    });
+}
 
 // ==================================================
 // INITIALIZE WITH DEMO ITEMS
