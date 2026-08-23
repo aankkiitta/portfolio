@@ -1946,30 +1946,29 @@ section {
   flex-direction: column;
   align-items: center;
   text-align: center;
-}
-
-.review-avatar {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.8rem;
-  color: #fff;
-  font-weight: 700;
-  margin-bottom: 16px;
-  flex-shrink: 0;
-  box-shadow: 0 4px 20px rgba(108, 77, 255, 0.2);
-  object-fit: cover;
-  overflow: hidden;
+}.review-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: #fff;
+    font-weight: 700;
+    margin-bottom: 16px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 20px rgba(108, 77, 255, 0.2);
+    overflow: hidden;
+    text-transform: uppercase;
 }
 
 .review-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
 }
 
 .review-stars {
@@ -6873,28 +6872,60 @@ I build responsive, scalable, and user-friendly web applications with clean code
         } catch (err) { alert('Server Error. Please try again.'); }
       });
 
-      async function loadReviews() {
-        try {
-         const res = await fetch('https://portfolio-3-l63x.onrender.com/api/reviews');
-          if (!res.ok) throw new Error('Failed to load');
-          const data = await res.json();
-          if (data.length === 0) {
+     async function loadReviews() {
+    try {
+        const res = await fetch('https://portfolio-3-l63x.onrender.com/api/reviews');
+        if (!res.ok) throw new Error('Failed to load');
+        const data = await res.json();
+        
+        if (data.length === 0) {
             track.innerHTML = `<div class="review-slide"><div class="review-avatar">✨</div><div class="review-stars">★★★★★</div><p class="review-text">"No reviews yet. Be the first to share your experience!"</p><div class="review-author">Be the First</div><div class="review-role">Leave a Review</div></div>`;
-          } else {
-            track.innerHTML = data.map(r => `
-              <div class="review-slide">
-                <div class="review-avatar">${r.image_url ? `<img src="${r.image_url}" alt="${r.name}">` : r.name.substring(0, 2).toUpperCase()}</div>
-                <div class="review-stars">${"★".repeat(Number(r.rating))}</div>
-                <p class="review-text">"${r.review}"</p>
-                <div class="review-author">${r.name}</div>
-                <div class="review-role">${r.email}</div>
-              </div>
-            `).join('');
-          }
-          initSlider();
-        } catch (err) { console.error(err); }
-      }
-
+        } else {
+            track.innerHTML = data.map(r => {
+                // Build the image URL properly
+                let imageUrl = '';
+                if (r.image_url) {
+                    // If it's a full URL (starts with http), use it directly
+                    if (r.image_url.startsWith('http')) {
+                        imageUrl = r.image_url;
+                    } else {
+                        // If it's a relative path, prepend the backend URL
+                        imageUrl = `https://portfolio-3-l63x.onrender.com${r.image_url}`;
+                    }
+                }
+                
+                // Get initials from name
+                const initials = r.name
+                    .split(' ')
+                    .map(word => word.charAt(0))
+                    .join('')
+                    .toUpperCase()
+                    .slice(0, 2);
+                
+                // Create avatar HTML with fallback
+                let avatarHtml;
+                if (imageUrl) {
+                    avatarHtml = `<img src="${imageUrl}" alt="${r.name}" onerror="this.style.display='none'; const parent=this.parentElement; parent.textContent='${initials}'; parent.style.display='flex'; parent.style.alignItems='center'; parent.style.justifyContent='center'; parent.style.background='linear-gradient(135deg, #6C4DFF, #8B5CFF)';">`;
+                } else {
+                    avatarHtml = initials;
+                }
+                
+                return `
+                    <div class="review-slide">
+                        <div class="review-avatar">${avatarHtml}</div>
+                        <div class="review-stars">${"★".repeat(Number(r.rating))}</div>
+                        <p class="review-text">"${r.review}"</p>
+                        <div class="review-author">${r.name}</div>
+                        <div class="review-role">${r.email}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        initSlider();
+    } catch (err) { 
+        console.error(err); 
+    }
+}
       function initSlider() {
         const slides = track.querySelectorAll('.review-slide');
         if (!slides.length) return;
