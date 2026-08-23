@@ -5838,8 +5838,7 @@ body.modal-open {
   </div>
   <div class="mouse-glow" id="mouseGlow"></div>
 
-  <!-- Loader -->
-  <div id="loader"><div class="spinner"></div></div>
+
   <div id="progress-bar"></div>
 
   <!-- Nav Overlay -->
@@ -6186,7 +6185,7 @@ I build responsive, scalable, and user-friendly web applications with clean code
 
 
 
-<!-- Certifications -->
+
 <!-- Certifications -->
 <section id="certifications">
     <div class="container">
@@ -6558,9 +6557,6 @@ I build responsive, scalable, and user-friendly web applications with clean code
       function anim() { cx += (mx - cx) * 0.05; cy += (my - cy) * 0.05; g.style.left = cx + 'px'; g.style.top = cy + 'px'; requestAnimationFrame(anim); }
       anim();
     })();
-
-    // Loader
-    window.addEventListener('load', () => document.getElementById('loader')?.classList.add('hidden'));
 
     // Progress bar
     const prog = document.getElementById('progress-bar');
