@@ -4992,8 +4992,6 @@ body.modal-open {
     background: #0d0d0f;
 }
 
-
-
 /* ==================================================
    CERTIFICATIONS - REDESIGNED
 ================================================== */
@@ -5043,6 +5041,7 @@ body.modal-open {
     flex-direction: column;
     position: relative;
     overflow: hidden;
+    cursor: pointer;
 }
 
 .cert-card::before {
@@ -5168,7 +5167,7 @@ body.modal-open {
 }
 
 /* ==================================================
-   CERTIFICATE MODAL
+   CERTIFICATE MODAL - WITH SCROLL ON DESKTOP
 ================================================== */
 
 .cert-modal-overlay {
@@ -5181,8 +5180,7 @@ body.modal-open {
     display: none;
     align-items: center;
     justify-content: center;
-    padding: 30px;
-    animation: certModalFadeIn 0.35s ease;
+    padding: 20px;
 }
 
 .cert-modal-overlay.active {
@@ -5196,11 +5194,12 @@ body.modal-open {
 
 .cert-modal-box {
     background: #0f172a;
-    width: min(860px, 100%);
+    width: 100%;
+    max-width: 1100px;
     max-height: 92vh;
     border-radius: 24px;
     border: 1px solid rgba(108, 77, 255, 0.12);
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), 0 0 60px rgba(108, 77, 255, 0.04);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
     animation: certModalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     display: flex;
     flex-direction: column;
@@ -5239,7 +5238,7 @@ body.modal-open {
 }
 
 .cert-modal-header {
-    padding: 28px 32px 16px;
+    padding: 24px 32px 16px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     flex-shrink: 0;
 }
@@ -5249,6 +5248,7 @@ body.modal-open {
     font-weight: 700;
     color: #ffffff;
     margin-bottom: 2px;
+    line-height: 1.3;
 }
 
 .cert-modal-header p {
@@ -5257,68 +5257,60 @@ body.modal-open {
     font-weight: 400;
 }
 
+/* Modal Body - Preview Area with Scroll on Desktop */
 .cert-modal-body {
-    padding: 24px 32px 20px;
     flex: 1;
+    padding: 20px;
+    min-height: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
     overflow-y: auto;
-    min-height: 300px;
-    max-height: 50vh;
+    overflow-x: hidden;
 }
 
+/* Custom Scrollbar Styling for Desktop */
 .cert-modal-body::-webkit-scrollbar {
-    width: 4px;
+    width: 8px;
 }
 
 .cert-modal-body::-webkit-scrollbar-track {
-    background: transparent;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
 }
 
 .cert-modal-body::-webkit-scrollbar-thumb {
-    background: rgba(108, 77, 255, 0.3);
+    background: rgba(108, 77, 255, 0.4);
     border-radius: 4px;
 }
 
 .cert-modal-body::-webkit-scrollbar-thumb:hover {
-    background: rgba(108, 77, 255, 0.5);
+    background: rgba(108, 77, 255, 0.6);
 }
 
-.cert-preview-container {
+/* Firefox scrollbar */
+.cert-modal-body {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(108, 77, 255, 0.4) rgba(255, 255, 255, 0.05);
+}
+
+.cert-preview-area {
     width: 100%;
-    height: 100%;
-    min-height: 300px;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative;
-}
-
-.cert-preview-container iframe {
-    width: 100%;
-    height: 100%;
-    min-height: 300px;
-    border: none;
-    background: #ffffff;
-}
-
-.cert-preview-placeholder {
-    position: absolute;
-    inset: 0;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    color: rgba(255, 255, 255, 0.3);
-    gap: 12px;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
-.cert-preview-placeholder i {
-    font-size: 48px;
-    color: rgba(108, 77, 255, 0.2);
-}
-
-.cert-preview-placeholder p {
-    font-size: 14px;
-    font-weight: 400;
+.cert-preview-image {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .cert-modal-footer {
@@ -5397,16 +5389,48 @@ body.modal-open {
 }
 
 /* ==================================================
-   CERTIFICATIONS RESPONSIVE
+   CERTIFICATE MODAL - RESPONSIVE
 ================================================== */
 
+/* Desktop - scroll enabled */
+@media (min-width: 769px) {
+    .cert-modal-body {
+        max-height: 55vh;
+        min-height: 400px;
+    }
+
+    .cert-preview-area {
+        min-height: 400px;
+    }
+
+    .cert-preview-image {
+        max-height: none;
+    }
+}
+
+/* Tablet */
 @media (max-width: 1024px) {
     .cert-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 20px;
     }
+
+    .cert-modal-box {
+        max-width: 95%;
+        max-height: 90vh;
+    }
+
+    .cert-modal-body {
+        max-height: 50vh;
+        min-height: 350px;
+    }
+
+    .cert-preview-area {
+        min-height: 350px;
+    }
 }
 
+/* Mobile - no scroll, fit in viewport */
 @media (max-width: 768px) {
     #certifications {
         padding: 3.5rem 0;
@@ -5455,18 +5479,24 @@ body.modal-open {
         font-size: 12px;
     }
 
-    /* Modal */
+    /* Modal - mobile no scroll */
+    .cert-modal-overlay {
+        padding: 10px;
+    }
+
     .cert-modal-box {
-        max-height: 90vh;
-        border-radius: 20px;
+        max-width: 100%;
+        max-height: 96vh;
+        border-radius: 18px;
     }
 
     .cert-modal-header {
-        padding: 20px 20px 12px;
+        padding: 16px 20px 12px;
     }
 
     .cert-modal-header h3 {
-        font-size: 18px;
+        font-size: 17px;
+        line-height: 1.2;
     }
 
     .cert-modal-header p {
@@ -5474,34 +5504,54 @@ body.modal-open {
     }
 
     .cert-modal-body {
-        padding: 16px 20px;
-        min-height: 200px;
-        max-height: 40vh;
+        padding: 12px;
+        min-height: 0;
+        max-height: 45vh;
+        overflow-y: hidden;
+        align-items: center;
     }
 
-    .cert-preview-container {
-        min-height: 200px;
+    .cert-modal-body::-webkit-scrollbar {
+        width: 0;
     }
 
-    .cert-preview-container iframe {
-        min-height: 200px;
+    .cert-preview-area {
+        min-height: 0;
+        max-height: 100%;
+        padding: 8px;
+        border-radius: 8px;
+        align-items: center;
+    }
+
+    .cert-preview-image {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
     }
 
     .cert-modal-footer {
-        padding: 12px 20px 18px;
-        gap: 10px;
+        padding: 12px 16px 16px;
+        flex-direction: column;
+        gap: 8px;
     }
 
     .cert-btn-primary,
     .cert-btn-secondary,
     .cert-btn-close {
-        font-size: 12px;
-        padding: 8px 18px;
+        width: 100%;
+        justify-content: center;
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+
+    .cert-btn-close {
+        margin-left: 0;
     }
 
     .cert-modal-close {
-        top: 12px;
-        right: 12px;
+        top: 10px;
+        right: 10px;
         width: 34px;
         height: 34px;
         font-size: 0.9rem;
@@ -5517,6 +5567,7 @@ body.modal-open {
     }
 }
 
+/* Small Mobile */
 @media (max-width: 480px) {
     .cert-card {
         padding: 16px 14px 14px;
@@ -5558,16 +5609,16 @@ body.modal-open {
 
     /* Modal Small */
     .cert-modal-box {
-        border-radius: 16px;
-        max-height: 92vh;
+        max-height: 97vh;
+        border-radius: 14px;
     }
 
     .cert-modal-header {
-        padding: 16px 16px 10px;
+        padding: 12px 14px 10px;
     }
 
     .cert-modal-header h3 {
-        font-size: 16px;
+        font-size: 15px;
     }
 
     .cert-modal-header p {
@@ -5575,30 +5626,35 @@ body.modal-open {
     }
 
     .cert-modal-body {
-        padding: 12px 16px;
-        min-height: 180px;
-        max-height: 35vh;
+        padding: 8px;
+        max-height: 40vh;
+        overflow-y: hidden;
+        align-items: center;
     }
 
-    .cert-preview-container {
-        min-height: 180px;
+    .cert-preview-area {
+        min-height: 0;
+        max-height: 100%;
+        padding: 4px;
+        border-radius: 6px;
+        align-items: center;
     }
 
-    .cert-preview-container iframe {
-        min-height: 180px;
+    .cert-preview-image {
+        max-width: 100%;
+        max-height: 100%;
     }
 
     .cert-modal-footer {
-        padding: 10px 16px 16px;
-        flex-direction: column;
-        gap: 8px;
+        padding: 10px 12px 14px;
+        gap: 6px;
     }
 
     .cert-btn-primary,
     .cert-btn-secondary,
     .cert-btn-close {
         font-size: 12px;
-        padding: 10px 16px;
+        padding: 8px 14px;
         width: 100%;
         justify-content: center;
     }
@@ -5608,18 +5664,19 @@ body.modal-open {
     }
 
     .cert-modal-close {
-        top: 10px;
-        right: 10px;
+        top: 8px;
+        right: 8px;
         width: 30px;
         height: 30px;
         font-size: 0.8rem;
     }
 
     .cert-modal-overlay {
-        padding: 12px;
+        padding: 8px;
     }
 }
 
+/* Extra Small Mobile */
 @media (max-width: 360px) {
     .cert-card {
         padding: 14px 12px 12px;
@@ -5653,6 +5710,68 @@ body.modal-open {
     .cert-open-btn {
         font-size: 10px;
     }
+
+    /* Modal Extra Small */
+    .cert-modal-overlay {
+        padding: 6px;
+    }
+
+    .cert-modal-box {
+        max-height: 98vh;
+        border-radius: 12px;
+    }
+
+    .cert-modal-header {
+        padding: 10px 12px 8px;
+    }
+
+    .cert-modal-header h3 {
+        font-size: 13px;
+    }
+
+    .cert-modal-header p {
+        font-size: 11px;
+    }
+
+    .cert-modal-body {
+        padding: 6px;
+        max-height: 35vh;
+        overflow-y: hidden;
+        align-items: center;
+    }
+
+    .cert-preview-area {
+        min-height: 0;
+        max-height: 100%;
+        padding: 4px;
+        align-items: center;
+    }
+
+    .cert-modal-footer {
+        padding: 8px 10px 12px;
+        gap: 5px;
+    }
+
+    .cert-btn-primary,
+    .cert-btn-secondary,
+    .cert-btn-close {
+        font-size: 11px;
+        padding: 7px 12px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .cert-btn-close {
+        margin-left: 0;
+    }
+
+    .cert-modal-close {
+        top: 6px;
+        right: 6px;
+        width: 28px;
+        height: 28px;
+        font-size: 0.7rem;
+    }
 }
 
 /* ==================================================
@@ -5683,6 +5802,23 @@ body.modal-open {
 
 [data-theme="dark"] .cert-card-divider {
     background: rgba(148, 163, 184, 0.06);
+}
+
+[data-theme="dark"] .cert-modal-box {
+    background: #0f172a;
+    border-color: rgba(108, 77, 255, 0.12);
+}
+
+[data-theme="dark"] .cert-modal-body::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+[data-theme="dark"] .cert-modal-body::-webkit-scrollbar-thumb {
+    background: rgba(108, 77, 255, 0.3);
+}
+
+[data-theme="dark"] .cert-modal-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(108, 77, 255, 0.5);
 }
 </style>
 </head>
@@ -6046,90 +6182,130 @@ I build responsive, scalable, and user-friendly web applications with clean code
     </div>
   </section>
 
+
+
+
+
+<!-- Certifications -->
 <!-- Certifications -->
 <section id="certifications">
     <div class="container">
         <p class="section-sub">Certifications</p>
         <h2 class="section-title">My <span class="gradient-text">Certifications</span></h2>
         <div class="cert-grid">
-            <!-- Certificate 1 -->
-     <div class="cert-card" data-cert="customer-engagement">
+            <!-- Certificate 1 - Customer Engagement -->
+            <div class="cert-card" data-cert="customer-engagement">
+                <div class="cert-card-top">
+                    <div class="cert-icon-wrapper"><i class="fas fa-award"></i></div>
+                    <span class="cert-preview-badge">PREVIEW</span>
+                </div>
+                <h3 class="cert-card-title">Customer Engagement: Problem Solving and Process Controls</h3>
+                <p class="cert-card-issuer">IBM SkillsBuild</p>
+                <span class="cert-card-date">Issued • Dec 15, 2025</span>
+                <div class="cert-card-divider"></div>
+                <button type="button" class="cert-open-btn" data-modal="certModalCustomer">
+                    <i class="fas fa-external-link-alt"></i> OPEN INTERACTIVE PREVIEW
+                </button>
+            </div>
 
+<!-- Certificate 2 - Data Science -->
+<div class="cert-card" data-cert="data-science">
     <div class="cert-card-top">
         <div class="cert-icon-wrapper">
-            <i class="fas fa-award"></i>
+            <i class="fas fa-chart-line"></i>
         </div>
         <span class="cert-preview-badge">PREVIEW</span>
     </div>
 
-    <h3 class="cert-card-title">
-        Customer Engagement: Problem Solving and Process Controls
-    </h3>
-
-    <p class="cert-card-issuer">IBM SkillsBuild</p>
-
-    <span class="cert-card-date">Issued • Dec 15, 2025</span>
+    <h3 class="cert-card-title">Data Science &amp; Analytics Internship</h3>
+    <p class="cert-card-issuer">Imarticus Learning – Thane Branch</p>
+    <span class="cert-card-date">Issued • 16 Dec 2025</span>
 
     <div class="cert-card-divider"></div>
 
-    <button class="cert-open-btn" data-cert="customer-engagement">
+    <button class="cert-open-btn" data-modal="certModalDataScience">
         <i class="fas fa-external-link-alt"></i>
         OPEN INTERACTIVE PREVIEW
     </button>
-
 </div>
 
-            <!-- Certificate 2 -->
-            <div class="cert-card" data-cert="data-science">
-                <div class="cert-card-top">
-                    <div class="cert-icon-wrapper">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <span class="cert-preview-badge">PREVIEW</span>
-                </div>
-                <h3 class="cert-card-title">Data Science & Analytics</h3>
-                <p class="cert-card-issuer">HP LIFE</p>
-                <span class="cert-card-date">Issued • 2025</span>
-                <div class="cert-card-divider"></div>
-                <button class="cert-open-btn" data-cert="data-science">
-                    <i class="fas fa-external-link-alt"></i> OPEN INTERACTIVE PREVIEW
-                </button>
-            </div>
+            
         </div>
     </div>
 </section>
 
-<!-- Certificate Preview Modal -->
-<div class="cert-modal-overlay" id="certModal">
+<!-- Modal 1 - Customer Engagement -->
+<!-- Certificate Preview Modal - Customer Engagement -->
+<div class="cert-modal-overlay" id="certModalCustomer">
     <div class="cert-modal-box">
-        <button class="cert-modal-close" id="certModalClose">
+        <button class="cert-modal-close" onclick="closeModal('certModalCustomer')">
             <i class="fas fa-times"></i>
         </button>
         <div class="cert-modal-header">
-            <h3 id="certModalTitle">Certificate Title</h3>
-            <p id="certModalIssuer">Issued by Organization</p>
+            <h3>Customer Engagement: Problem Solving and Process Controls</h3>
+            <p>Issued by IBM SkillsBuild</p>
         </div>
         <div class="cert-modal-body">
-            <div class="cert-preview-container">
-                <iframe id="certPdfViewer" src="" frameborder="0"></iframe>
-                <div class="cert-preview-placeholder" id="certPlaceholder">
-                    <i class="fas fa-file-pdf"></i>
-                    <p>Loading certificate preview...</p>
-                </div>
+            <div class="cert-preview-area">
+                <img 
+                    src="IBM.png" 
+                    alt="IBM SkillsBuild Customer Engagement Certificate" 
+                    class="cert-preview-image">
             </div>
         </div>
         <div class="cert-modal-footer">
-            <a href="#" id="certVerifyLink" target="_blank" class="cert-btn-primary">
+            <a href="IBMDesign20260806-20-ff9god.pdf" target="_blank" class="cert-btn-primary">
                 <i class="fas fa-check-circle"></i> Verify Credential Online
             </a>
-            <a href="#" id="certPdfLink" target="_blank" class="cert-btn-secondary">
+            <a href="IBMDesign20260806-20-ff9god.pdf" target="_blank" class="cert-btn-secondary">
                 <i class="fas fa-file-pdf"></i> Open Full PDF
             </a>
-            <button class="cert-btn-close" id="certModalCloseBtn">Close Preview</button>
+            <button class="cert-btn-close" onclick="closeModal('certModalCustomer')">Close Preview</button>
         </div>
     </div>
 </div>
+<!-- Modal 2 - Data Science -->
+<div class="cert-modal-overlay" id="certModalDataScience">
+    <div class="cert-modal-box">
 
+        <button class="cert-modal-close" onclick="closeModal('certModalDataScience')">
+            <i class="fas fa-times"></i>
+        </button>
+
+        <div class="cert-modal-header">
+            <h3>Data Science &amp; Analytics Internship</h3>
+            <p>Issued by Imarticus Learning – Thane Branch</p>
+        </div>
+
+        <div class="cert-modal-body">
+            <div class="cert-preview-container">
+                <img 
+                    src="data.jpg" 
+                    alt="Data Science &amp; Analytics Internship Certificate" 
+                    style="width:100%; height:auto; display:block; border-radius:8px;"
+                >
+            </div>
+        </div>
+
+        <div class="cert-modal-footer">
+
+            <a
+                href="data.jpg"
+                target="_blank"
+                class="cert-btn-secondary">
+                <i class="fas fa-file-pdf"></i>
+                Open Full PDF
+            </a>
+
+            <button
+                class="cert-btn-close"
+                onclick="closeModal('certModalDataScience')">
+                Close Preview
+            </button>
+
+        </div>
+    </div>
+</div>
 
 
   <!-- Resume -->
@@ -6663,124 +6839,104 @@ if (contactForm) {
         }
     });
 }
-
-
 // ==================================================
-// CERTIFICATE MODAL FUNCTIONALITY
+// CERTIFICATE MODAL FUNCTIONALITY - Multiple Modals
 // ==================================================
 
 (function() {
-    const modal = document.getElementById('certModal');
-    const modalClose = document.getElementById('certModalClose');
-    const modalCloseBtn = document.getElementById('certModalCloseBtn');
-    const modalTitle = document.getElementById('certModalTitle');
-    const modalIssuer = document.getElementById('certModalIssuer');
-    const pdfViewer = document.getElementById('certPdfViewer');
-    const placeholder = document.getElementById('certPlaceholder');
-    const verifyLink = document.getElementById('certVerifyLink');
-    const pdfLink = document.getElementById('certPdfLink');
-
-    const certData = {
-        'ai-fundamentals': {
-            title: 'Artificial Intelligence Fundamentals',
-            issuer: 'Great Learning',
-            pdf: 'certificates/Artificial_Intelligence_Fundamentals.pdf',
-            verifyUrl: 'https://verify.greatlearning.com/ai-fundamentals' // Replace with actual URL
-        },
-        'data-science': {
-            title: 'Data Science & Analytics',
-            issuer: 'HP LIFE',
-            pdf: 'certificates/Data_Science_Analytics.pdf',
-            verifyUrl: 'https://verify.hplife.com/data-science' // Replace with actual URL
+    // Function to open modal by ID
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            document.body.classList.add('modal-open');
         }
-    };
-
-    function openModal(certId) {
-        const data = certData[certId];
-        if (!data) return;
-
-        modalTitle.textContent = data.title;
-        modalIssuer.textContent = 'Issued by ' + data.issuer;
-        pdfLink.href = data.pdf;
-        verifyLink.href = data.verifyUrl;
-
-        // Show loading placeholder
-        placeholder.style.display = 'flex';
-        pdfViewer.style.display = 'none';
-
-        // Load PDF in iframe
-        pdfViewer.src = data.pdf;
-
-        // Hide placeholder when iframe loads
-        pdfViewer.onload = function() {
-            placeholder.style.display = 'none';
-            pdfViewer.style.display = 'block';
-        };
-
-        // Timeout fallback
-        setTimeout(function() {
-            if (placeholder.style.display !== 'none') {
-                placeholder.innerHTML = `
-                    <i class="fas fa-file-pdf" style="color: rgba(108,77,255,0.3);"></i>
-                    <p style="color: rgba(255,255,255,0.4);">Click "Open Full PDF" to view certificate</p>
-                `;
-            }
-        }, 5000);
-
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        document.body.classList.add('modal-open');
     }
 
-    function closeModal() {
-        modal.classList.remove('active');
+    // Function to close modal by ID
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            document.body.classList.remove('modal-open');
+        }
+    }
+
+    // Function to close all modals (for Escape key)
+    function closeAllModals() {
+        document.querySelectorAll('.cert-modal-overlay.active').forEach(modal => {
+            modal.classList.remove('active');
+        });
         document.body.style.overflow = '';
         document.body.classList.remove('modal-open');
-        pdfViewer.src = '';
-        pdfViewer.style.display = 'none';
-        placeholder.style.display = 'flex';
-        placeholder.innerHTML = `
-            <i class="fas fa-file-pdf"></i>
-            <p>Loading certificate preview...</p>
-        `;
     }
 
-    // Event Listeners for certificate cards
+    // Event Listeners for certificate cards - using data-modal attribute
     document.querySelectorAll('.cert-open-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.stopPropagation();
-            const certId = this.dataset.cert;
-            openModal(certId);
+            const modalId = this.dataset.modal;
+            if (modalId) {
+                openModal(modalId);
+            }
         });
     });
 
     // Also open modal when clicking on the card
     document.querySelectorAll('.cert-card').forEach(card => {
         card.addEventListener('click', function(e) {
-            // Don't open if clicking on the button (already handled)
             if (e.target.closest('.cert-open-btn')) return;
-            const certId = this.dataset.cert;
-            openModal(certId);
+            const btn = this.querySelector('.cert-open-btn');
+            if (btn) {
+                const modalId = btn.dataset.modal;
+                if (modalId) {
+                    openModal(modalId);
+                }
+            }
         });
     });
 
-    // Close modal events
-    modalClose.addEventListener('click', closeModal);
-    modalCloseBtn.addEventListener('click', closeModal);
+    // Close modal when clicking the close button (X)
+    document.querySelectorAll('.cert-modal-close').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const modal = this.closest('.cert-modal-overlay');
+            if (modal) {
+                closeModal(modal.id);
+            }
+        });
+    });
+
+    // Close modal when clicking the "Close Preview" button
+    document.querySelectorAll('.cert-btn-close').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const modal = this.closest('.cert-modal-overlay');
+            if (modal) {
+                closeModal(modal.id);
+            }
+        });
+    });
 
     // Close on overlay click
-    modal.addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeModal();
-        }
+    document.querySelectorAll('.cert-modal-overlay').forEach(modal => {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal(this.id);
+            }
+        });
     });
 
     // Close on Escape key
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && modal.classList.contains('active')) {
-            closeModal();
+        if (e.key === 'Escape') {
+            closeAllModals();
         }
     });
+
+    // Also support inline onclick attributes (for backward compatibility)
+    window.openModal = openModal;
+    window.closeModal = closeModal;
 })();
     })();
   </script>
