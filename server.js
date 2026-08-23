@@ -92,15 +92,15 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'fix-loader.html'));
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "fix-loader.html"));
 });
 
-// Serve static files with absolute path
-app.use('/uploads', express.static(path.join(__dirname, UPLOAD_DIR)));
+// Serve portfolio files
+app.use(express.static(__dirname));
 
+// Serve uploaded files
+app.use('/uploads', express.static(path.join(__dirname, UPLOAD_DIR)));
 // ==================================================
 // MULTER CONFIGURATION
 // ==================================================
