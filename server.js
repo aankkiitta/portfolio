@@ -89,17 +89,18 @@ app.use(cors({
     },
     credentials: true
 }));
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Open fix-loader.html first
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "fix-loader.html"));
 });
 
-// Serve portfolio files
+// Serve all project files
 app.use(express.static(__dirname));
 
-// Serve uploaded files
+// Serve uploads
 app.use('/uploads', express.static(path.join(__dirname, UPLOAD_DIR)));
 // ==================================================
 // MULTER CONFIGURATION
