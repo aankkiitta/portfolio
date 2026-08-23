@@ -5820,13 +5820,14 @@ body.modal-open {
 [data-theme="dark"] .cert-modal-body::-webkit-scrollbar-thumb:hover {
     background: rgba(108, 77, 255, 0.5);
 }
-
 .live-badge {
     position: absolute;
     top: 12px;
-    right: 12px;
+    left: 12px;
+    right: auto;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
     padding: 5px 9px;
     border-radius: 20px;
@@ -5836,14 +5837,34 @@ body.modal-open {
     font-weight: 700;
     letter-spacing: 0.5px;
     z-index: 5;
+    white-space: nowrap;
 }
 
 .live-dot {
     width: 7px;
     height: 7px;
+    min-width: 7px;
     border-radius: 50%;
     background: #fff;
     box-shadow: 0 0 7px rgba(255,255,255,0.9);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .live-badge {
+        top: 8px;
+        left: 8px;
+        padding: 4px 7px;
+        font-size: 9px;
+        gap: 4px;
+        letter-spacing: 0.3px;
+    }
+
+    .live-dot {
+        width: 6px;
+        height: 6px;
+        min-width: 6px;
+    }
 }
 
 .project-image {
