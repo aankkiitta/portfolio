@@ -1600,35 +1600,38 @@ section {
   gap: 3rem;
   align-items: center;
   margin-top: 2rem;
-}.about-image {
-    background: transparent;
-    padding: 0;
-    border-radius: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: none;
+}
+.about-image {
+  background: linear-gradient(135deg, #F2F0FF 0%, #ECE9FB 100%);
+  padding: 35px;
+  border-radius: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 20px 60px rgba(139,92,246,.12);
 }
 
-.about-image img {
-    width: 480px;
-    height: 620px;
-    object-fit: contain;
-    border-radius: 0;
-    border: none;
-    box-shadow: none;
-    transition: .4s;
+.about-image img{
+  width: 380px;
+  height: 500px;
+  object-fit: cover;
+  border-radius: 20px;
+  border: 2px solid rgba(255,255,255,.8);
+  box-shadow: 0 15px 40px rgba(0,0,0,.2);
+  transition: .4s;
 }
-.about-image img:hover {
-    transform: scale(1.02);
+
+.about-image img:hover{
+  transform: scale(1.03);
 }
 
 .about-text p {
-    color: var(--text-secondary);
-    font-size: 1.05rem;
-    line-height: 1.8;
-    margin-bottom: 1rem;
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.8;
+  margin-bottom: 1rem;
 }
+
 .exp-timeline {
   position: relative;
   padding-left: 45px;
@@ -2873,28 +2876,18 @@ section {
     text-align: center;
     gap: 2rem;
   }
-    .about-image {
-        width: 100%;
-        max-width: 100%;
-        padding: 0;
-        margin: 0 auto;
-        background: transparent;
-        box-shadow: none;
-        border-radius: 0;
-    }
-
-    .about-image img {
-        width: 100%;
-        max-width: 420px;
-        height: auto;
-        max-height: none;
-        object-fit: contain;
-        border: none;
-        border-radius: 0;
-        box-shadow: none;
-        display: block;
-        margin: 0 auto;
-    }
+  .about-image {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 280px;
+    padding: 20px;
+  }
+  .about-image img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3/4;
+    max-height: 400px;
+  }
   .about-text p {
     font-size: 0.95rem;
   }
@@ -3277,18 +3270,14 @@ section {
     top: 10px;
     right: 10px;
   }
-   .about-image {
-        width: 100%;
-        max-width: 100%;
-        padding: 0;
-    }
 
-    .about-image img {
-        width: 95%;
-        max-width: 380px;
-        height: auto;
-        max-height: none;
-    }
+  .about-image {
+    max-width: 220px;
+    padding: 16px;
+  }
+  .about-image img {
+    max-height: 320px;
+  }
   .about-text p {
     font-size: 0.9rem;
   }
@@ -3562,18 +3551,14 @@ section {
     font-size: 9px;
     padding: 3px 8px;
   }
- .about-image {
-        width: 100%;
-        max-width: 100%;
-        padding: 0;
-    }
 
-    .about-image img {
-        width: 100%;
-        max-width: 340px;
-        height: auto;
-        max-height: none;
-    }
+  .about-image {
+    max-width: 180px;
+    padding: 12px;
+  }
+  .about-image img {
+    max-height: 260px;
+  }
   .about-text p {
     font-size: 0.85rem;
   }
@@ -4075,34 +4060,35 @@ section {
 
 body.modal-open {
   overflow: hidden !important;
-}/* ==========================================
-   HERO PHOTO - DESKTOP (PROPERLY SIZED & CENTERED)
+}
+/* ==========================================
+   HERO PHOTO - DESKTOP (UNCHANGED)
 ========================================== */
 
 .profile-image-wrapper {
     width: 100%;
-    max-width: 520px; /* Controlled size */
-    height: 520px;
+    max-width: 680px;
+    height: 680px;
     display: flex;
-    align-items: center; /* Vertical center */
-    justify-content: center; /* Horizontal center */
+    align-items: flex-end;
+    justify-content: center;
     overflow: visible;
     background: transparent;
     position: relative;
-    margin: 0 auto; /* Center in column */
-    transform: none; /* Remove transform */
+    transform: translateY(-70px);
+    margin-bottom: -20px;
 }
 
 .hero-profile-image {
-    width: 100%; /* Match wrapper */
-    height: 100%;
+    width: 125%;
+    height: 125%;
     object-fit: contain;
-    object-position: center; /* Center the person */
+    object-position: center bottom;
     display: block;
     background: transparent;
     border: none;
     border-radius: 0;
-    transform: none; /* Remove transform */
+    transform: translateY(-55px);
     animation: profileFloat 6s ease-in-out infinite;
     filter:
         drop-shadow(6px 6px 0px rgba(108, 77, 255, 0.12))
@@ -4113,26 +4099,31 @@ body.modal-open {
 
 @keyframes profileFloat {
     0%, 100% {
-        transform: translateY(0);
+        transform: translateY(-55px);
     }
     50% {
-        transform: translateY(-8px);
+        transform: translateY(-62px);
     }
 }
 
 
 /* ==========================================
-   TABLET (1024px)
+   TABLET
 ========================================== */
 
 @media (max-width: 1024px) {
     .profile-image-wrapper {
-        max-width: 450px; /* Slightly smaller for tablet */
-        height: 450px;
+        max-width: 570px;
+        height: 570px;
+        transform: translateY(-50px);
+        margin-bottom: -40px;
     }
     .hero-profile-image {
-        width: 100%;
-        height: 100%;
+        width: 115%;
+        height: 115%;
+        object-fit: contain;
+        object-position: center bottom;
+        transform: translateY(-40px);
         filter:
             drop-shadow(5px 5px 0px rgba(108, 77, 255, 0.12))
             drop-shadow(10px 10px 0px rgba(108, 77, 255, 0.08))
@@ -4143,7 +4134,7 @@ body.modal-open {
 
 
 /* ==========================================
-   MOBILE - PROPERLY SIZED & CENTERED
+   MOBILE - COMPLETE FIX
 ========================================== */
 
 @media (max-width: 768px) {
@@ -4176,7 +4167,6 @@ body.modal-open {
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
-        min-height: auto !important;
     }
 
     /* === PROFILE INFO CARD === */
@@ -4200,26 +4190,30 @@ body.modal-open {
         font-size: 0.5rem !important;
     }
 
-    /* === IMAGE WRAPPER - CONTROLLED SIZE === */
+    /* === IMAGE WRAPPER === */
     .profile-image-wrapper {
         width: 100% !important;
-        max-width: 360px !important; /* Mobile size */
-        height: 360px !important;
+        max-width: 100% !important;
+        height: auto !important;
+        min-height: 0 !important;
+        max-height: none !important;
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
         transform: none !important;
-        margin: 0 auto !important; /* Center horizontally */
+        margin: 0 !important;
         padding: 0 !important;
         position: relative !important;
         overflow: visible !important;
         background: transparent !important;
     }
 
-    /* === PROFILE IMAGE - PROPERLY SIZED === */
+    /* === PROFILE IMAGE - LARGE & FULLY VISIBLE === */
     .hero-profile-image {
         width: 100% !important;
-        height: 100% !important;
+        max-width: 520px !important;
+        height: auto !important;
+        aspect-ratio: 1/1 !important;
         object-fit: contain !important;
         object-position: center !important;
         display: block !important;
@@ -4232,7 +4226,7 @@ body.modal-open {
             drop-shadow(8px 8px 0px rgba(108, 77, 255, 0.08))
             drop-shadow(12px 12px 0px rgba(108, 77, 255, 0.04))
             drop-shadow(0 15px 20px rgba(70, 55, 120, 0.10)) !important;
-        margin: 0 !important;
+        margin: 0 auto !important;
         padding: 0 !important;
     }
 
@@ -4257,7 +4251,6 @@ body.modal-open {
         padding: 5.5rem 0 0.25rem !important;
         min-height: auto !important;
         margin: 0 !important;
-        overflow-x: hidden !important;
     }
 
     /* === HERO BUTTONS === */
@@ -4277,8 +4270,6 @@ body.modal-open {
     .container {
         padding-left: 1rem !important;
         padding-right: 1rem !important;
-        max-width: 100% !important;
-        overflow: visible !important;
     }
 
     /* === REMOVE ALL EXTRA SPACING === */
@@ -4302,9 +4293,8 @@ body.modal-open {
 ========================================== */
 
 @media (max-width: 480px) {
-    .profile-image-wrapper {
-        max-width: 320px !important;
-        height: 320px !important;
+    .hero-profile-image {
+        max-width: 400px !important;
     }
 
     .profile-info-card {
@@ -4345,9 +4335,8 @@ body.modal-open {
 ========================================== */
 
 @media (max-width: 360px) {
-    .profile-image-wrapper {
-        max-width: 280px !important;
-        height: 280px !important;
+    .hero-profile-image {
+        max-width: 340px !important;
     }
 
     .profile-info-card {
@@ -4439,6 +4428,146 @@ body.modal-open {
     /* Fix any grid spacing in the parent */
     .hero-grid {
         grid-template-columns: 1fr !important;
+    }
+}
+
+/* ==========================================
+   SOCIAL LINKS - MOBILE VISIBLE
+========================================== */
+
+@media (max-width: 768px) {
+
+    .social-links,
+    .social-sidebar,
+    .hero-social,
+    .social-icons {
+        display: flex !important;
+
+        position: absolute !important;
+
+        left: 10px !important;
+        top: 50% !important;
+
+        transform: translateY(-50%) !important;
+
+        flex-direction: column !important;
+
+        align-items: center !important;
+        justify-content: center !important;
+
+        gap: 18px !important;
+
+        z-index: 1000 !important;
+
+        width: 42px !important;
+        padding: 12px 8px !important;
+
+        border-radius: 25px !important;
+
+        background: rgba(255, 255, 255, 0.90) !important;
+
+        box-shadow:
+            0 8px 25px rgba(70, 55, 120, 0.12) !important;
+
+        backdrop-filter: blur(10px) !important;
+    }
+
+
+    .social-links a,
+    .social-sidebar a,
+    .hero-social a,
+    .social-icons a {
+        display: flex !important;
+
+        align-items: center !important;
+        justify-content: center !important;
+
+        width: 32px !important;
+        height: 32px !important;
+
+        color: #182033 !important;
+
+        text-decoration: none !important;
+
+        font-size: 18px !important;
+
+        transition: all 0.3s ease !important;
+    }
+
+
+    .social-links a:hover,
+    .social-sidebar a:hover,
+    .hero-social a:hover,
+    .social-icons a:hover {
+        color: #6c4dff !important;
+
+        transform: translateY(-3px) !important;
+    }
+}
+
+
+/* ==========================================
+   SMALL MOBILE
+========================================== */
+
+@media (max-width: 480px) {
+
+    .social-links,
+    .social-sidebar,
+    .hero-social,
+    .social-icons {
+        left: 6px !important;
+
+        width: 38px !important;
+
+        padding: 10px 6px !important;
+
+        gap: 12px !important;
+
+        border-radius: 22px !important;
+    }
+
+
+    .social-links a,
+    .social-sidebar a,
+    .hero-social a,
+    .social-icons a {
+        width: 28px !important;
+        height: 28px !important;
+
+        font-size: 16px !important;
+    }
+}
+
+
+/* ==========================================
+   VERY SMALL MOBILE
+========================================== */
+
+@media (max-width: 360px) {
+
+    .social-links,
+    .social-sidebar,
+    .hero-social,
+    .social-icons {
+        left: 4px !important;
+
+        width: 34px !important;
+
+        padding: 8px 5px !important;
+
+        gap: 9px !important;
+    }
+
+
+    .social-links a,
+    .social-sidebar a,
+    .hero-social a,
+    .social-icons a {
+        width: 25px !important;
+        height: 25px !important;
+
+        font-size: 14px !important;
     }
 }
 /* ==================================================
@@ -5844,7 +5973,7 @@ I build responsive, scalable, and user-friendly web applications with clean code
 <div class="hero-right reveal-right">
     <div class="profile-image-wrapper">
         <img
-            src="image.png"
+            src="image1.png"
             alt="Ankita Chauhan"
             class="hero-profile-image"
         >
@@ -5911,7 +6040,7 @@ I build responsive, scalable, and user-friendly web applications with clean code
     <div class="about-grid">
 
       <div class="about-image">
-        <img src="image1.png" alt="Ankita Chauhan">
+        <img src="https://res.cloudinary.com/dngjbgaaf/image/upload/v1785492516/portfolio/reviews/ek5cnzqz7ue4ymrrcgro.png" alt="Ankita Chauhan">
       </div>
 
       <div class="about-text">
